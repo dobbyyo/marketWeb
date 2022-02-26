@@ -26,6 +26,8 @@
     "linebreak-style": "off",
     "no-param-reassign": "off",
     "arrow-body-style": "off",
-    "operator-linebreak": "off"
+    "operator-linebreak": "off",
+    "implicit-arrow-linebreak": "off",
+    "react/jsx-props-no-spreading": ["off"]
   }
 }
