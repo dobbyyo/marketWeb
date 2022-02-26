@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faShop } from '@fortawesome/free-solid-svg-icons';
-import { Container, Logo, Menu, Toggled, User } from './styled';
 import { useSelector } from 'react-redux';
+
+import { Container, Logo, Menu, Toggled, User } from './styled';
 
 const Header = () => {
   const [isToggled, isSetToggled] = useState(false);
@@ -47,7 +48,7 @@ const Header = () => {
           <User>
             <div>
               <Link href="/profile">
-                <a>프로필</a>
+                <a style={{ fontSize: '14px' }}>{me.nickname}님 프로필</a>
               </Link>
             </div>
           </User>
@@ -60,7 +61,7 @@ const Header = () => {
             </Link>
           </div>
           <div>
-            <Link href="/join">
+            <Link href="/signup">
               <a>회원가입</a>
             </Link>
           </div>

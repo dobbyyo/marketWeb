@@ -8,7 +8,7 @@ import Router from 'next/router';
 import { Box, Container, Form } from '../components/login/styled';
 import { LOG_IN_REQUEST } from '../reducers/user/userAction';
 
-const login = () => {
+const Login = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
 
@@ -95,4 +95,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;

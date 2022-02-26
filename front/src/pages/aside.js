@@ -1,7 +1,7 @@
 import React from 'react';
 
-const aside = () => {
+const Aside = () => {
   return <div>d</div>;
 };
 
-export default aside;
+export default Aside;
