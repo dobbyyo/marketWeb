@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { createGlobalStyle } from 'styled-components';
 import { reset } from 'styled-reset';
 
+import Header from '../components/header/Header';
 import wrapper from '../store/configureStore';
-// import Header from '../components/header/Header';
 
 const GlobalStyle = createGlobalStyle`
   ${reset};
@@ -18,6 +18,9 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: inherit;
   }
+  ol, ul {
+    list-style: none;
+  }
   body{
     @font-face {
       font-family: 'SANJUGotgam';
@@ -26,7 +29,7 @@ const GlobalStyle = createGlobalStyle`
       font-style: normal;
     }
     font-family: "SANJUGotgam";
-    background-color: #E7E7E7;
+    /* background-color: #E7E7E7; */
   }
 
 `;
@@ -37,7 +40,7 @@ const DobbyMount = ({ Component }) => {
       <Head>
         <title>Dobby</title>
       </Head>
-
+      <Header />
       <GlobalStyle />
       <Component />
     </>
@@ -48,7 +51,7 @@ DobbyMount.propTypes = {
 };
 
 export function reportWebVitals(metric) {
-  console.log(metric);
+  // console.log(metric);
 }
 
 export default wrapper.withRedux(DobbyMount);
