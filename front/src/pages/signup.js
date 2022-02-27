@@ -9,8 +9,8 @@ import { SIGN_UP_REQUEST } from '../reducers/user/userAction';
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { signUpDone } = useSelector((state) => state.user);
-  const [passwordError, setPasswordError] = useState(false);
+  const { me, signUpDone } = useSelector((state) => state.user);
+  const [passwordError, setPasswordError, signUpError] = useState(false);
   const {
     register,
     handleSubmit,
@@ -19,13 +19,24 @@ const Signup = () => {
   } = useForm();
 
   useEffect(() => {
-    if (signUpDone) {
-      Router.push('/login');
+    if (me) {
+      Router.push('/');
     }
-  }, [signUpDone]);
+  }, [me && me.id]);
 
-  const { name, email, password, rePassword } = getValues();
-  console.log(name, email, password, rePassword);
+  useEffect(() => {
+    if (signUpDone) {
+      Router.replace('/login');
+    }
+  });
+  useEffect(() => {
+    if (signUpError) {
+      alert(signUpError);
+    }
+  }, [signUpError]);
+
+  const { name, email, password, rePassword, nickname, gender } = getValues();
+
   const onSubmit = useCallback(
     (data) => {
       console.log(data);
@@ -38,6 +49,8 @@ const Signup = () => {
           name,
           email,
           password,
+          nickname,
+          gender,
         },
       });
     },
@@ -48,6 +61,11 @@ const Signup = () => {
   const onError = (error) => {
     console.log(error);
   };
+
+  // const onClickHandler = (event) => {
+  //   event.preventDefault();
+  //   Router.push('/');
+  // };
 
   return (
     <Container>
@@ -80,11 +98,11 @@ const Signup = () => {
             id="nickname"
             type="text"
             placeholder="별명"
-            {...register('name', {
+            {...register('nickname', {
               required: true,
               pattern: {
                 minLength: 1,
-                message: '성함을 1글자 이상으로 작성해주세요.',
+                message: '별명을 1글자 이상으로 작성해주세요.',
               },
             })}
           />
