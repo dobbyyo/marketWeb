@@ -8,6 +8,8 @@ import {
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
   SIGN_UP_FAILURE,
+  ADD_POST_TO_ME,
+  REMOVE_POST_TO_ME,
 } from './userAction';
 
 const dummyUser = (data) => ({
@@ -52,6 +54,14 @@ const reducer = (state = initialState, action) =>
       case SIGN_UP_FAILURE:
         draft.signUpLoading = false;
         draft.signUpError = action.error;
+        break;
+      case ADD_POST_TO_ME:
+        draft.me.Posts.unshift({ id: action.data });
+        break;
+      case REMOVE_POST_TO_ME:
+        draft.me.Posts = draft.me.Posts.filter(
+          (data) => data.id !== action.data,
+        );
         break;
       default:
         break;

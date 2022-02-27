@@ -40,6 +40,13 @@ const Header = () => {
         <ul>
           <li>물건</li>
           <li>문의</li>
+          {me && (
+            <li className="uploadItem">
+              <Link href="post">
+                <a>물건 올리기</a>
+              </Link>
+            </li>
+          )}
         </ul>
       </Menu>
       {/* user */}

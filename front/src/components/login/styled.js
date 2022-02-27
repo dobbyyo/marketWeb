@@ -46,7 +46,7 @@ export const Form = styled.form`
     width: 100%;
     &:last-child {
       display: block;
-      background-color: #33cc77;
+      background-color: #201c2c;
       margin: 0 auto;
       width: 10rem;
       border: none;

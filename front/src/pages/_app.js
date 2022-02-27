@@ -29,7 +29,7 @@ const GlobalStyle = createGlobalStyle`
       font-style: normal;
     }
     font-family: "SANJUGotgam";
-    /* background-color: #E7E7E7; */
+    background-color: #E3E3DB;
   }
 
 `;

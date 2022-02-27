@@ -8,7 +8,8 @@ export const Container = styled.div`
   align-items: center;
   font-size: 1.5rem;
   height: 4rem;
-  border-bottom: 1px solid #111;
+  border-bottom: 3px solid #111;
+  background-color: #fff;
 `;
 export const Logo = styled.div`
   width: 30%;
@@ -30,6 +31,13 @@ export const Menu = styled.div`
     display: flex;
     li {
       padding: 0 0.5rem;
+    }
+    .uploadItem {
+      background-color: black;
+      border-radius: 5rem;
+      color: #fff;
+      /* padding: 1rem 0; */
+      cursor: pointer;
     }
   }
   @media screen and (max-width: 768px) {
