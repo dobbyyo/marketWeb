@@ -4,6 +4,9 @@ import {
   LOG_IN_FAILURE,
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
+  LOG_OUT_FAILURE,
+  LOG_OUT_REQUEST,
+  LOG_OUT_SUCCESS,
   SIGN_UP_FAILURE,
   SIGN_UP_REQUEST,
   SIGN_UP_SUCCESS,
@@ -58,13 +61,35 @@ function* signUp(action) {
   }
 }
 
+function logOutAPI() {
+  return axios.post('/api/logout');
+}
+
+function* logOut(action) {
+  try {
+    // const result = yield call(logOutAPI);
+    yield delay(1000);
+    yield put({
+      type: LOG_OUT_SUCCESS,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOG_OUT_FAILURE,
+      payload: action.err,
+    });
+  }
+}
+
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
 function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp);
 }
-
+function* watchLogOut() {
+  yield takeLatest(LOG_OUT_REQUEST, logOut);
+}
 export default function* userSaga() {
-  yield all([fork(watchLogIn), fork(watchSignUp)]);
+  yield all([fork(watchLogIn), fork(watchSignUp), fork(watchLogOut)]);
 }

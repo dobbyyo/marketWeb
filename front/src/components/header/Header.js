@@ -54,6 +54,11 @@ const Header = () => {
         <>
           <User>
             <div>
+              <Link href="/login">
+                <a>로그인</a>
+              </Link>
+            </div>
+            <div>
               <Link href="/profile">
                 <a style={{ fontSize: '14px' }}>{me.nickname}님 프로필</a>
               </Link>
