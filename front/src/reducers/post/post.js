@@ -17,19 +17,11 @@ const dummyPost = (data) => ({
   content: data.content,
   User: {
     id: 1,
-    nicknmae: '도비',
+    nickname: '도비',
   },
   Images: [],
-  Comments: [],
 });
-//  addPostLoading: false,
-//   addPostDone: false,
-//   addPostError: null,
 
-//   // 글 제거
-//   removePostLoading: false,
-//   removePostDone: false,
-//   removePostError: null,
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
@@ -58,7 +50,7 @@ const reducer = (state = initialState, action) =>
       case REMOVE_POST_SUCCESS:
         draft.addPostLoading = false;
         draft.addPostDone = true;
-        draft.mainPosts.unshift(dummyPost(action.data));
+        draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data);
         break;
       case REMOVE_POST_FAILURE:
         draft.addPostLoading = false;

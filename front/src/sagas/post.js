@@ -30,17 +30,17 @@ async function loadPostAPI(data) {
 
 function* loadPosts(action) {
   try {
-    const result = yield call(loadPostAPI, action.data);
+    // const result = yield call(loadPostAPI, action.data);
     yield delay(1000);
     yield put({
       type: LOAD_POSTS_SUCCESS,
-      payload: fakerPostData(10),
+      data: fakerPostData(5),
     });
   } catch (err) {
     console.log(err);
     yield put({
       type: LOAD_POSTS_FAILURE,
-      payload: action.err,
+      payload: err.response.data,
     });
   }
 }
@@ -51,7 +51,7 @@ async function addPostAPI(data) {
 }
 function* addPost(action) {
   try {
-    const result = yield call(addPostAPI, action.data);
+    // const result = yield call(addPostAPI, action.data);
     yield delay(1000);
     const id = shortid.generate();
     yield put({
@@ -81,7 +81,7 @@ async function removePostAPI(data) {
 
 function* removePost(action) {
   try {
-    const result = yield call(removePostAPI, action.data);
+    // const result = yield call(removePostAPI, action.data);
     yield delay(1000);
     yield put({
       type: REMOVE_POST_SUCCESS,
@@ -95,19 +95,19 @@ function* removePost(action) {
     console.log(err);
     yield put({
       type: REMOVE_POST_FAILURE,
-      payload: action.data,
+      payload: err.response.data,
     });
   }
 }
 
+function* watchLoadPosts() {
+  yield throttle(1000, LOAD_POSTS_REQUEST, loadPosts);
+}
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 function* watchRemovePost() {
   yield takeLatest(REMOVE_POST_REQUEST, removePost);
-}
-function* watchLoadPosts() {
-  yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
 }
 
 export default function* postSaga() {

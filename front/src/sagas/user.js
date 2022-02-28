@@ -31,7 +31,7 @@ function* logIn(action) {
     console.log(err);
     yield put({
       type: LOG_IN_FAILURE,
-      payload: action.err,
+      payload: err.response.data,
       //   error: err.response.data,
     });
   }
@@ -56,7 +56,7 @@ function* signUp(action) {
     console.log(err);
     yield put({
       type: SIGN_UP_FAILURE,
-      payload: action.err,
+      payload: err.response.data,
     });
   }
 }
@@ -76,7 +76,7 @@ function* logOut(action) {
     console.error(err);
     yield put({
       type: LOG_OUT_FAILURE,
-      payload: action.err,
+      payload: err.response.data,
     });
   }
 }

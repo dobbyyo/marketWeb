@@ -2,8 +2,8 @@ import shortId from 'shortid';
 import faker from 'faker';
 
 export const initialState = {
-  imagePaths: [],
   mainPosts: [],
+  imagePaths: [],
 
   // 글 업로드
   addPostLoading: false,
@@ -30,7 +30,7 @@ export const fakerPostData = (number) =>
         id: shortId.generate(),
         nickname: faker.name.findName(),
       },
-      content: faker.lorem.paragraphs,
+      content: faker.lorem.paragraph(),
       Images: [
         {
           src: faker.image.image(),

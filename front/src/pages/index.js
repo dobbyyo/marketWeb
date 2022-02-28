@@ -1,17 +1,32 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Slider from 'react-slick';
+
 import { BoxLeft, Container, Header, Main } from '../components/home/styled';
 import PostCard from '../components/post/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post/postAction';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const Home = () => {
   const { mainPosts } = useSelector((state) => state.post);
+  const { me } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch({
       type: LOAD_POSTS_REQUEST,
     });
   }, []);
+  console.log(mainPosts);
+  console.log(me);
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 2,
+    slidesToScroll: 2,
+  };
+
   return (
     <Container>
       <Header>
@@ -31,9 +46,11 @@ const Home = () => {
         </BoxLeft>
       </Header>
       <Main>
-        {mainPosts.map((c) => (
-          <PostCard key={c.id} post={c} />
-        ))}
+        <Slider {...settings}>
+          {mainPosts.map((c) => (
+            <PostCard key={c.id} post={c} />
+          ))}
+        </Slider>
       </Main>
     </Container>
   );

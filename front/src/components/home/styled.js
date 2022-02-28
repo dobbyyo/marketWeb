@@ -4,6 +4,7 @@ import myImg from '../../img/bgimg.jpg';
 export const Container = styled.div`
   width: 100%;
   height: 100vh;
+  /* background-color: #fff; */
 `;
 export const Header = styled.div`
   display: flex;
@@ -11,7 +12,7 @@ export const Header = styled.div`
   background-image: url(${myImg.src});
   /* 이 부분 에러 고친거 블로그에 설명예정. */
   width: 100%;
-  height: 100%;
+  height: 70%;
   background-repeat: no-repeat;
   background-size: cover;
   padding: 0 2rem;
@@ -44,6 +45,6 @@ export const BoxLeft = styled.div`
 `;
 
 export const Main = styled.div`
-  height: 50vh;
-  background-color: #fff;
+  width: 70%;
+  margin: 0 auto;
 `;
