@@ -8,7 +8,6 @@ const Container = styled.div`
   margin-top: 3rem;
   width: 70%;
   height: 70%;
-  background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;

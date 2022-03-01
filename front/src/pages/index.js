@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Slider from 'react-slick';
 
@@ -10,15 +10,19 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const Home = () => {
   const { mainPosts } = useSelector((state) => state.post);
-  const { me } = useSelector((state) => state.user);
+  // const { me } = useSelector((state) => state.user);
+  const [start, setStart] = useState(false);
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch({
-      type: LOAD_POSTS_REQUEST,
-    });
+    if (mainPosts.length < 5) {
+      dispatch({
+        type: LOAD_POSTS_REQUEST,
+      });
+    }
   }, []);
+
   console.log(mainPosts);
-  console.log(me);
   const settings = {
     dots: true,
     infinite: true,

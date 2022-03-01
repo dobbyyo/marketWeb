@@ -38,7 +38,11 @@ const Header = () => {
       {/* 메뉴 */}
       <Menu>
         <ul>
-          <li>물건</li>
+          <li>
+            <Link href="/items">
+              <a>물건</a>
+            </Link>
+          </li>
           <li>문의</li>
           {me && (
             <li className="uploadItem">
