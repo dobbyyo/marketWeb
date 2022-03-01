@@ -19,6 +19,9 @@ export const initialState = {
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+
+  // 스크롤 내렸을때 이미지 더 불러오기
+  morePosts: true,
 };
 
 export const fakerPostData = (number) =>

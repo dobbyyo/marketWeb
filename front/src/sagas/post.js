@@ -34,7 +34,7 @@ function* loadPosts(action) {
     yield delay(1000);
     yield put({
       type: LOAD_POSTS_SUCCESS,
-      data: fakerPostData(5),
+      data: fakerPostData(10),
     });
   } catch (err) {
     console.log(err);
@@ -101,7 +101,7 @@ function* removePost(action) {
 }
 
 function* watchLoadPosts() {
-  yield throttle(1000, LOAD_POSTS_REQUEST, loadPosts);
+  yield throttle(10000, LOAD_POSTS_REQUEST, loadPosts);
 }
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);
@@ -111,5 +111,5 @@ function* watchRemovePost() {
 }
 
 export default function* postSaga() {
-  yield all([fork(watchAddPost), fork(watchRemovePost), fork(watchLoadPosts)]);
+  yield all([fork(watchLoadPosts), fork(watchAddPost), fork(watchRemovePost)]);
 }

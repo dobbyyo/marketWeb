@@ -31,27 +31,7 @@ const PostImages = ({ images }) => {
   //     </>
   //   );
   // }
-  // if (images.length === 4) {
-  //   return (
-  //     <>
-  //       <img src={images[0].src} alt={images[0].src} />
-  //       <img src={images[1].src} alt={images[1].src} />
-  //       <img src={images[2].src} alt={images[2].src} />
-  //       <img src={images[3].src} alt={images[3].src} />
-  //     </>
-  //   );
-  // }
-  // if (images.length === 5) {
-  //   return (
-  //     <>
-  //       <img src={images[0].src} alt={images[0].src} width="50%" />
-  //       <img src={images[1].src} alt={images[1].src} width="50%" />
-  //       <img src={images[2].src} alt={images[2].src} width="50%" />
-  //       <img src={images[3].src} alt={images[3].src} width="50%" />
-  //       <img src={images[4].src} alt={images[4].src} />
-  //     </>
-  //   );
-  // }
+
   return (
     <div>
       <Img src={images[0].src} alt={images[0].src} />
