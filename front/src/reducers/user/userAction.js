@@ -1,9 +1,12 @@
 export const initialState = {
   me: null,
+  userInfo: null,
+
   // 로그인
   logInLoading: false,
   logInDone: false,
   loginError: null,
+
   // 회원가입
   signUpLoading: false,
   signUpDone: false,

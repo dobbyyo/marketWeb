@@ -35,27 +35,22 @@ const Signup = () => {
     }
   }, [signUpError]);
 
-  const { name, email, password, rePassword, nickname, gender } = getValues();
-
-  const onSubmit = useCallback(
-    (data) => {
-      console.log(data);
-      if (password !== rePassword) {
-        return setPasswordError(true);
-      }
-      return dispatch({
-        type: SIGN_UP_REQUEST,
-        data: {
-          name,
-          email,
-          password,
-          nickname,
-          gender,
-        },
-      });
-    },
-    [name, email, password, rePassword],
-  );
+  const onSubmit = useCallback(() => {
+    const { name, email, password, rePassword, nickname } = getValues();
+    console.log(name, email, password, nickname);
+    if (password !== rePassword) {
+      return setPasswordError(true);
+    }
+    return dispatch({
+      type: SIGN_UP_REQUEST,
+      data: {
+        name,
+        email,
+        password,
+        nickname,
+      },
+    });
+  }, []);
   // 나중에 데이터로 바꾸기.
 
   const onError = (error) => {
@@ -147,7 +142,7 @@ const Signup = () => {
             <span style={{ color: 'red' }}>최소 4글자입니다.</span>
           )}
 
-          <label htmlFor="rePassword">비밀번호</label>
+          <label htmlFor="rePassword">비밀번호 확인</label>
           <input
             id="rePassword"
             type="password"
@@ -163,15 +158,6 @@ const Signup = () => {
             <span style={{ color: 'red' }}>비밀번호가 틀렸습니다.</span>
           )}
 
-          <select {...register('gender')}>
-            <option value="female">여자</option>
-            <option value="male">남자</option>
-            <option value="other">예외</option>
-          </select>
-
-          {errors.gender && errors.gender.type === 'required' && (
-            <span style={{ color: 'red' }}>필수로 작성해주세요</span>
-          )}
           <div>
             <input type="submit" value="로그인" />
           </div>

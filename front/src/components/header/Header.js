@@ -1,19 +1,26 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faShop } from '@fortawesome/free-solid-svg-icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Container, Logo, Menu, Toggled, User } from './styled';
+import { LOG_OUT_REQUEST } from '../../reducers/user/userAction';
 
 const Header = () => {
   const [isToggled, isSetToggled] = useState(false);
   const { me } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const toggledHandler = () => {
     isSetToggled((pre) => !pre);
   };
 
+  const onLogOutClick = useCallback(() => {
+    dispatch({
+      type: LOG_OUT_REQUEST,
+    });
+  }, []);
   return (
     <Container isToggled={isToggled}>
       {/* 로고 */}
@@ -58,9 +65,13 @@ const Header = () => {
         <>
           <User>
             <div>
-              <Link href="/login">
-                <a>로그인</a>
-              </Link>
+              <a
+                role="presentation"
+                onClick={onLogOutClick}
+                style={{ cursor: 'pointer' }}
+              >
+                로그아웃
+              </a>
             </div>
             <div>
               <Link href="/profile">

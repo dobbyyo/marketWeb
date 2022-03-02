@@ -101,7 +101,7 @@ function* removePost(action) {
 }
 
 function* watchLoadPosts() {
-  yield throttle(10000, LOAD_POSTS_REQUEST, loadPosts);
+  yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
 function* watchAddPost() {
   yield takeLatest(ADD_POST_REQUEST, addPost);

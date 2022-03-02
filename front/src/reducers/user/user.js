@@ -1,5 +1,5 @@
 import produce from 'immer';
-import faker from 'faker';
+// import faker from 'faker';
 import {
   initialState,
   LOG_IN_REQUEST,
@@ -15,16 +15,21 @@ import {
   LOG_OUT_FAILURE,
 } from './userAction';
 
-const dummyUser = (data) => ({
-  ...data,
-  nickname: faker.name.findName(),
-  gender: faker.name.gender(),
-  email: faker.internet.email(),
-  username: faker.internet.userName(),
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [{ cickname: '도비' }, { nickname: '다민' }],
-  Followers: [{ cickname: '도비' }, { nickname: '다민' }],
+// const dummyUser = (data) => ({
+//   ...data,
+//   nickname: faker.name.findName(),
+//   gender: faker.name.gender(),
+//   email: faker.internet.email(),
+//   username: faker.internet.userName(),
+//   id: 1,
+//   Posts: [{ id: 1 }],
+//   Followings: [{ cickname: '도비' }, { nickname: '다민' }],
+//   Followers: [{ cickname: '도비' }, { nickname: '다민' }],
+// });
+
+export const loginRequestAction = (data) => ({
+  type: LOG_IN_REQUEST,
+  data,
 });
 
 const reducer = (state = initialState, action) =>
@@ -39,7 +44,7 @@ const reducer = (state = initialState, action) =>
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
         draft.logInDone = true;
-        draft.me = dummyUser(action.data);
+        draft.me = action.data;
         break;
       case LOG_IN_FAILURE:
         draft.logInLoading = false;

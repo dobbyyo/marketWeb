@@ -7,41 +7,47 @@ import Router from 'next/router';
 
 import { Box, Container, Form } from '../components/login/styled';
 import { LOG_IN_REQUEST } from '../reducers/user/userAction';
+import { loginRequestAction } from '../reducers/user/user';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  const { logInError, loginDone, me } = useSelector((state) => state.user);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    getValues,
   } = useForm();
 
-  const onSubmit = useCallback(
-    (data) => {
-      console.log(data);
-      dispatch({
-        type: LOG_IN_REQUEST,
-        data,
-      });
-      reset();
-      if (me) {
-        Router.push('/');
-      }
-    },
-    [register],
-  );
-  const onError = (error) => {
-    console.log(error);
-  };
+  // useEffect(() => {
+  //   if (logInError) {
+  //     alert(logInError);
+  //   }
+  // }, [logInError]);
+
+  const onSubmit = useCallback(() => {
+    const { email, password } = getValues();
+    console.log(email, password);
+    // dispatch(loginRequestAction({ email, password }));
+    return dispatch({
+      type: LOG_IN_REQUEST,
+      data: {
+        email,
+        password,
+      },
+    });
+  }, [loginRequestAction]);
 
   useEffect(() => {
     if (me) {
       Router.push('/');
     }
-  }, [me]);
+  }, [me && me.id]);
+
+  const onError = (error) => {
+    console.log(error);
+  };
 
   return (
     <Container>
