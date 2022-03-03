@@ -9,6 +9,7 @@ const dotenv = require("dotenv");
 const db = require("./models");
 const passportConfig = require("./passport");
 const userRouter = require("./routes/user");
+const postRouter = require("./routes/post");
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.use(
   cors({
     origin: true,
     credentials: true,
+    // 도메인이 다르면 쿠키가 안보내지니깐 credentials를 true로 바꿔주면 보내진다.
   })
 );
 
@@ -50,6 +52,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRouter);
+app.use("/post", postRouter);
 
 app.listen(3100, () => {
   console.log("서버 실행 중!");

@@ -22,11 +22,11 @@ const items = () => {
 
   useEffect(() => {
     if (inView && morePosts && !loadPostsLoading) {
-      // const lastId = mainPosts[mainPosts.length - 1]?.id;
+      const lastId = mainPosts[mainPosts.length - 1]?.id;
 
       dispatch({
         type: LOAD_POSTS_REQUEST,
-        // lastId,
+        lastId,
       });
     }
   }, [inView, morePosts, loadPostsLoading, mainPosts]);

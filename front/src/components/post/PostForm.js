@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { ADD_POST_REQUEST } from '../../reducers/post/postAction';
 
@@ -65,6 +65,7 @@ const Form = styled.form`
 
 const PostForm = () => {
   const dispatch = useDispatch();
+  const { imagePaths, addPostDone } = useSelector((state) => state.post);
   const imageInput = useRef();
 
   const {
@@ -72,19 +73,38 @@ const PostForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    getValues,
   } = useForm();
 
   const onError = (error) => {
     console.log(error);
   };
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback((data) => {
+    const { title, content, price, category } = getValues();
+
+    if (!title || !title.trim()) {
+      return alert('제목을 적어주세요');
+    }
+    if (!content || !content.trim()) {
+      return alert('설명을 적어주세요');
+    }
+    if (category === 'none') {
+      return alert('카테고리를 정해주세요.');
+    }
     dispatch({
       type: ADD_POST_REQUEST,
-      //   data: text,
+      data: {
+        title,
+        content,
+        price,
+        category,
+      },
     });
-    reset('');
-  });
+    if (addPostDone) {
+      reset('');
+    }
+  }, []);
 
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
@@ -96,12 +116,16 @@ const PostForm = () => {
         <h1>Post</h1>
       </Header>
       <Main>
-        <Form onSubmit={handleSubmit(onSubmit, onError)}>
+        <Form
+          onSubmit={handleSubmit(onSubmit, onError)}
+          encType="multipart/form-data"
+        >
           {/* <label htmlFor="title">제목</label> */}
           <input
             id="title"
+            name="title"
             type="text"
-            placeholder="Title"
+            placeholder="제목"
             {...register('title', {
               required: true,
             })}
@@ -111,16 +135,40 @@ const PostForm = () => {
           )}
           {/* <label htmlFor="description">본문</label> */}
           <input
-            id="description"
+            id="content"
+            name="content"
             type="text"
-            placeholder="description"
-            {...register('description', {
+            placeholder="설명"
+            {...register('content', {
               required: true,
             })}
           />
-          {errors.description && errors.description.type === 'required' && (
+          {errors.content && errors.content.type === 'required' && (
             <span style={{ color: 'red' }}>필수로 작성해주세요</span>
           )}
+
+          <input
+            id="price"
+            name="price"
+            type="number"
+            placeholder="가격"
+            {...register('price', {
+              required: true,
+            })}
+          />
+          {errors.price && errors.price.type === 'required' && (
+            <span style={{ color: 'red' }}>가격을 작성해주세요</span>
+          )}
+
+          <select id="category" name="category" {...register('category')}>
+            <option value="none">선택하세요</option>
+            <option value="바지">바지</option>
+            <option value="002">맨투맨</option>
+            <option value="003">아우터</option>
+            <option value="004">치마</option>
+            <option value="005">원피스</option>
+            <option value="006">기타</option>
+          </select>
 
           <input type="file" multiple hidden ref={imageInput} />
           <input

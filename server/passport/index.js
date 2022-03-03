@@ -19,3 +19,6 @@ module.exports = () => {
 
   local();
 };
+
+// 로그인을 하고 있을때 deserializeUser가 라우터에 접근할때마다 실행하여 id를 넘겨준다.
+// req.user로 만든다.

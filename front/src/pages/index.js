@@ -7,6 +7,7 @@ import PostCard from '../components/post/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post/postAction';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user/userAction';
 
 const Home = () => {
   const { mainPosts } = useSelector((state) => state.post);
@@ -14,6 +15,9 @@ const Home = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
     if (mainPosts.length < 5) {
       dispatch({
         type: LOAD_POSTS_REQUEST,

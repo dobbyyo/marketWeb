@@ -1,14 +1,6 @@
 import axios from 'axios';
-import {
-  all,
-  call,
-  delay,
-  fork,
-  put,
-  takeLatest,
-  throttle,
-} from 'redux-saga/effects';
-import shortid from 'shortid';
+import { all, call, delay, fork, put, takeLatest } from 'redux-saga/effects';
+
 import {
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
@@ -51,25 +43,20 @@ async function addPostAPI(data) {
 }
 function* addPost(action) {
   try {
-    // const result = yield call(addPostAPI, action.data);
-    yield delay(1000);
-    const id = shortid.generate();
+    const result = yield call(addPostAPI, action.data);
     yield put({
       type: ADD_POST_SUCCESS,
-      payload: {
-        id,
-        content: action.data,
-      },
+      data: result.data,
     });
     yield put({
       type: ADD_POST_TO_ME,
-      payload: id,
+      data: result.data.id,
     });
   } catch (err) {
     console.log(err);
     yield put({
       type: ADD_POST_FAILURE,
-      payload: err.response.data,
+      error: err.response.data,
     });
   }
 }

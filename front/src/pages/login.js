@@ -11,7 +11,7 @@ import { loginRequestAction } from '../reducers/user/user';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { logInError, loginDone, me } = useSelector((state) => state.user);
+  const { me } = useSelector((state) => state.user);
 
   const {
     register,
