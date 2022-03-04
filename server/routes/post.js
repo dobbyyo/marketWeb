@@ -8,7 +8,36 @@ const { isLoggedIn } = require("./middlewares");
 
 const router = express.Router();
 
-router.post("/", isLoggedIn, async (req, res, next) => {
+try {
+  fs.accessSync("uploads");
+} catch (error) {
+  console.log("uploads 풀더가 없으므로 생성합니다.");
+  fs.mkdirSync("uploads");
+}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, "uploads");
+    },
+    filename(req, file, done) {
+      // EX) 강아지.png
+      const extend = path.extname(file.originalname);
+      // 확장자 추출 (.Png)
+      const basename = path.basename(file.originalname, extend);
+      // 강아지
+      done(null, basename + "_" + new Date().getTime() + extend);
+      // 강아지(숫자).png ex) 강아지1212.Png
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+});
+
+// 위 처럼 설정해준 이유는 먼저 업로드한사람이랑 나중에 업로드 한사람이 이름이 같으면 덮어씌우기 때문에 시간까지 더한다.
+// 나중에 빅 프로젝트에서는 프론트에서 바로 클라우드로 넘겨주는 것이 좋다.
+
+// 게시글 업로드
+router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
     const post = await Post.create({
       title: req.body.title,
@@ -17,6 +46,21 @@ router.post("/", isLoggedIn, async (req, res, next) => {
       category: req.body.category,
       UserId: req.user.id,
     });
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image }))
+        );
+        // Promise.all을 하면 한번에 디비에 저장이 된다.
+        // 보통 이미지는 클라우드에 저장하고 주소는 디비에 저장한다.
+        await post.addImages(images);
+      } else {
+        // 이미지를 하나만 올리면 image: 제로초.png
+        const image = await Image.create({ src: req.body.image });
+        await post.addImages(image);
+      }
+    }
     const fullPost = await Post.findOne({
       where: { id: post.id },
       include: [
@@ -40,6 +84,7 @@ router.post("/", isLoggedIn, async (req, res, next) => {
 // upload.array => req.files 객체에 한 개의 속성, 여러 개의 파일 업로드 배열
 // ipload.fields({name: 'profile, maxCount: 1}, {name: 'photo', })
 
+// 특정 게시글 댓글 업로드
 router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   try {
     await Post.findOne({
@@ -60,22 +105,62 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   }
 });
 
-// const upload = multer({
-//   storage: multer.diskStorage({
-//     destination(req, file, done) {
-//       done(null, "uploads");
-//     },
-//     filename(req, file, done) {
-//       // EX) 강아지.png
-//       const extend = path.extname(file.originalname); // 확장자 추출 (.Png)
-//       const basename = path.basename(file.originalname, extend); // 강아지
-//       done(null, basename + "_" + new Date().getTime() + extend); // 강아지(숫자).png ex) 강아지1212.Png
-//     },
-//   }),
-//   limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
-// });
+// 이미지 업로드
+router.post(
+  "/images",
+  isLoggedIn,
+  upload.array("image"),
+  // 프론트 append 키값이랑 같아야함.
+  async (req, res, next) => {
+    // 여러장일때 array 한개일때 single
+    // TEXT같은 것만 있을때는 none
+    // 전송 폼이 여러개면 files
+    console.log(req.files);
+    res.json(req.files.map((img) => img.filename));
+  }
+);
 
-// 위 처럼 설정해준 이유는 먼저 업로드한사람이랑 나중에 업로드 한사람이 이름이 같으면 덮어씌우기 때문에 시간까지 더한다.
-// 나중에 빅 프로젝트에서는 프론트에서 바로 클라우드로 넘겨주는 것이 좋다.
+// 게시글 삭제
+router.delete("/:postId", isLoggedIn, async (req, res, next) => {
+  try {
+    await Post.destroy({
+      where: { id: req.params.postId, UserId: req.user.id },
+    });
+    res.json({ PostId: req.params.postId });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 특정 게시글 get
+router.get("/:postId", async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    });
+    if (!post) {
+      return res.status(404).send("존재하지 않은 게시글입니다.");
+    }
+    const fullPost = await Post.findOne({
+      where: { id: post.id },
+      include: [
+        {
+          model: User,
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+        },
+      ],
+    });
+    res.status(200).json(fullPost);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 
 module.exports = router;

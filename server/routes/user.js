@@ -67,6 +67,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
   })(req, res, next);
 });
 
+// 유저 정보 가져오기
 router.get("/", async (req, res, next) => {
   try {
     if (req.user) {
@@ -82,6 +83,7 @@ router.get("/", async (req, res, next) => {
           },
         ],
       });
+      console.log(req.headers);
       res.status(200).json(fullUserWithoutPassword);
     } else {
       res.status(200).json(null);
@@ -92,6 +94,37 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// 특정 유저 정보 가져오기
+router.get("/:userId", async (req, res, next) => {
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.userId },
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+      ],
+    });
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      // 시퀄라이즈에서 보내준 데이터는 제이슨이 아니므로 json으로 변경해줘야 사용가능.
+
+      res.status(200).json(fullUserWithoutPassword);
+    } else {
+      res.status(404).json("존재하지 않는 사용자입니다.");
+    }
+    console.log(req.headers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 로그아웃
 router.post("/logout", isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();

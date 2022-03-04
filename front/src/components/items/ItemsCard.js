@@ -1,64 +1,50 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
+import { useSelector, useDispatch } from 'react-redux';
 
 import ItemImg from './ItemImg';
-
-const Box = styled.div`
-  width: 40%;
-  height: 30rem;
-  background-color: #fff;
-  margin-top: 1rem;
-  /* display: flex; */
-  justify-content: center;
-`;
-
-const InfoContainer = styled.div`
-  /* background-color: red; */
-  /* border: 3px solid #000; */
-  height: 24vh;
-`;
-
-const Info = styled.div`
-  font-size: 1.5rem;
-  margin-top: 1rem;
-  padding: 0rem 3rem;
-  display: flex;
-  justify-content: space-around;
-`;
-
-const Description = styled.div`
-  padding: 0rem 3rem;
-  /* background-color: #111; */
-  height: 80%;
-  /* color: #fff; */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Div = styled.div`
-  display: flex;
-  justify-content: center;
-`;
+import { Box, Description, Div, Info, InfoContainer } from './styled';
+import { REMOVE_POST_REQUEST } from '../../reducers/post/postAction';
 
 const ItemsCard = ({ post }) => {
+  const dispatch = useDispatch();
+  // const { removePostLoading } = useSelector((state) => state.post);
+  const id = useSelector((state) => state.user.me?.id);
+
+  const onRemovePost = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    return dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
+  });
+
   return (
     <Box>
-      {post.Images[0] && (
+      {id && post.User.id === id ? (
         <>
-          <Div>
-            <ItemImg images={post.Images} />
-          </Div>
-          <InfoContainer>
-            <Info>
-              <div>에어팟</div>
-              <div>가격 : 1000</div>
-            </Info>
-            <Description>미개봉입니다.</Description>
-          </InfoContainer>
+          <button type="button" onClick={onRemovePost}>
+            제거
+          </button>
         </>
+      ) : (
+        <></>
       )}
+
+      {post.Images[0] && (
+        <Div>
+          <ItemImg images={post.Images} />
+        </Div>
+      )}
+      <InfoContainer>
+        <Info>
+          <div>{post.title}</div>
+          <div>{post.price}</div>
+        </Info>
+        <Description>{post.content}</Description>
+      </InfoContainer>
     </Box>
   );
 };
@@ -66,12 +52,17 @@ const ItemsCard = ({ post }) => {
 ItemsCard.propTypes = {
   post: PropTypes.shape({
     id: PropTypes.number,
+    title: PropTypes.string,
+    category: PropTypes.string,
+    price: PropTypes.string,
+    content: PropTypes.string,
+    userId: PropTypes.number,
     User: PropTypes.shape({
       id: PropTypes.number,
       nickname: PropTypes.string,
     }),
-    content: PropTypes.string,
     Images: PropTypes.arrayOf(PropTypes.any),
+    Comments: PropTypes.arrayOf(PropTypes.any),
   }).isRequired,
 };
 export default ItemsCard;

@@ -7,20 +7,17 @@ import {
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
+  LOAD_POST_FAILURE,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
+  REMOVE_IMAGE,
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  UPLOAD_IMAGES_FAILURE,
+  UPLOAD_IMAGES_REQUEST,
+  UPLOAD_IMAGES_SUCCESS,
 } from './postAction';
-
-const dummyPost = (data) => ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id: 1,
-    nickname: '도비',
-  },
-  Images: [],
-});
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -44,37 +41,73 @@ const reducer = (state = initialState, action) =>
 
       // 글 제거
       case REMOVE_POST_REQUEST:
-        draft.addPostLoading = true;
-        draft.addPostDone = false;
-        draft.addPostError = null;
+        draft.removePostLoading = true;
+        draft.removePostDone = false;
+        draft.removePostError = null;
         break;
       case REMOVE_POST_SUCCESS:
-        draft.addPostLoading = false;
-        draft.addPostDone = true;
+        draft.removePostLoading = false;
+        draft.removePostDone = true;
         draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data);
         break;
       case REMOVE_POST_FAILURE:
-        draft.addPostLoading = false;
-        draft.addPostError = action.error;
+        draft.removePostLoading = false;
+        draft.removePostError = action.error;
         break;
 
-      // 글 불러오기
+      // 모든글 불러오기
       case LOAD_POSTS_REQUEST:
-        draft.addPostLoading = true;
-        draft.addPostDone = false;
-        draft.addPostError = null;
+        draft.loadPostsLoading = true;
+        draft.loadPostsDone = false;
+        draft.loadPostsError = null;
         break;
       case LOAD_POSTS_SUCCESS:
-        draft.addPostLoading = false;
-        draft.addPostDone = true;
-        draft.mainPosts = action.data.concat(draft.mainPosts);
-        draft.morePosts = draft.mainPosts.length < 50;
+        draft.loadPostsLoading = false;
+        draft.loadPostsDone = true;
+        draft.mainPosts = action.data;
+        draft.hasMorePosts = action.data.length === 10;
         break;
       case LOAD_POSTS_FAILURE:
-        draft.addPostLoading = false;
-        draft.addPostError = action.error;
+        draft.loadPostsLoading = false;
+        draft.loadPostsError = action.error;
         break;
 
+      // 특정 유저 글 불러오기
+      case LOAD_POST_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_POST_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.singlePost = action.data;
+        break;
+      case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
+        break;
+
+      // 이미지 업로드
+      case UPLOAD_IMAGES_REQUEST:
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        break;
+      case UPLOAD_IMAGES_SUCCESS:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesDone = true;
+        draft.imagePaths = action.data;
+        break;
+      case UPLOAD_IMAGES_FAILURE:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
+        break;
+
+      // Form에서 이미지 삭제
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
+        break;
       // Default
       default:
         break;

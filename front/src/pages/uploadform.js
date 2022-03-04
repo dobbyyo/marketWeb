@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 
 import PostForm from '../components/post/PostForm';
@@ -12,9 +11,11 @@ const Container = styled.div`
 `;
 
 const post = () => {
-  // const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
-  return <Container>{<PostForm />}</Container>;
+  return (
+    <Container>
+      <PostForm />
+    </Container>
+  );
 };
 
 export default post;

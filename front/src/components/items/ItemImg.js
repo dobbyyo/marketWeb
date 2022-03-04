@@ -4,13 +4,15 @@ import PropTypes from 'prop-types';
 
 const Img = styled.img`
   width: 100%;
-  /* margin-top: 2rem; */
 `;
 
 const ItemImg = ({ images }) => {
   return (
     <div>
-      <Img src={images[0].src} alt={images[0].src} />
+      <Img
+        src={`http://localhost:3100/${images[0].src}`}
+        alt={`http://localhost:3100/${images[0].src}`}
+      />
     </div>
   );
 };

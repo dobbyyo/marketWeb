@@ -5,11 +5,13 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const dotenv = require("dotenv");
+const path = require("path");
 
 const db = require("./models");
 const passportConfig = require("./passport");
 const userRouter = require("./routes/user");
 const postRouter = require("./routes/post");
+const postsRouter = require("./routes/posts");
 
 dotenv.config();
 
@@ -33,6 +35,8 @@ app.use(
   })
 );
 
+app.use("/", express.static(path.join(__dirname, "uploads")));
+// "/"는 현재 서버 localhost3100을 의미  __dirname 뜻은 현재 풀더를 뜻함.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -53,6 +57,7 @@ app.get("/", (req, res) => {
 
 app.use("/user", userRouter);
 app.use("/post", postRouter);
+app.use("/posts", postsRouter);
 
 app.listen(3100, () => {
   console.log("서버 실행 중!");

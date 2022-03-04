@@ -16,57 +16,33 @@ const Container = styled.div`
 const items = () => {
   const dispatch = useDispatch();
   const [ref, inView] = useInView();
-  const { mainPosts, morePosts, loadPostsLoading } = useSelector(
-    (state) => state.post,
-  );
+  const { mainPosts, morePosts, loadPostsLoading, removePostDone } =
+    useSelector((state) => state.post);
 
+  console.log(inView, morePosts, !loadPostsLoading);
   useEffect(() => {
-    if (inView && morePosts && !loadPostsLoading) {
+    if (!loadPostsLoading || removePostDone) {
       const lastId = mainPosts[mainPosts.length - 1]?.id;
-
       dispatch({
         type: LOAD_POSTS_REQUEST,
         lastId,
       });
     }
-  }, [inView, morePosts, loadPostsLoading, mainPosts]);
-
-  // useEffect(() => {
-  //   function onScroll() {
-  //     console.log(mainPosts[mainPosts.length - 1].id);
-  //     // console.log(
-  //     //   window.scrollY, // 얼마나 내렸는지
-  //     //   document.documentElement.clientHeight, // 화면에 보이는 높이
-  //     //   document.documentElement.scrollHeight, // 총 길이
-  //     // );
-  //     // 3208 849 5024
-  //     if (
-  //       window.scrollY + document.documentElement.clientHeight >
-  //       document.documentElement.scrollHeight - 300
-  //     ) {
-  //       if (morePosts && !loadPostsLoading) {
-  //         dispatch({
-  //           type: LOAD_POSTS_REQUEST,
-  //           data: mainPosts[mainPosts.length - 1].id,
-  //         });
-  //       }
-  //     }
-  //   }
-  //   window.addEventListener('scroll', onScroll);
-  //   return () => {
-  //     window.removeEventListener('scroll', onScroll);
-  //   };
-  // }, [mainPosts, morePosts, loadPostsLoading]);
+  }, [removePostDone]);
 
   return (
     <Container>
-      {mainPosts.map((v) => (
-        <ItemsCard key={v.id} post={v} />
-      ))}
-      <div
-        style={{ height: '2rem' }}
-        ref={morePosts && !loadPostsLoading ? ref : undefined}
-      />
+      {/* {mainPosts[0] && ( */}
+      <>
+        {mainPosts.map((post) => (
+          <ItemsCard key={post} post={post} />
+        ))}
+        <div
+          style={{ height: '2rem' }}
+          // ref={morePosts && !loadPostsLoading ? ref : undefined}
+        />
+      </>
+      {/* // )} */}
     </Container>
   );
 };
