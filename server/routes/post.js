@@ -90,7 +90,7 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
     await Post.findOne({
       where: { id: req.params.postId },
     });
-    if (!psot) {
+    if (!post) {
       return res.status(403).send("존재하지 않는 상품입니다.");
     }
     const comment = await Comment.create({
