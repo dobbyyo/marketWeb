@@ -4,6 +4,9 @@ import {
   LOAD_MY_INFO_FAILURE,
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
+  LOAD_USER_FAILURE,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
   LOG_IN_FAILURE,
   LOG_IN_REQUEST,
   LOG_IN_SUCCESS,
@@ -61,6 +64,7 @@ function* signUp(action) {
   }
 }
 
+// 로그아웃
 async function logOutAPI() {
   const res = await axios.post('/user/logout');
   return res;
@@ -82,6 +86,7 @@ function* logOut() {
   }
 }
 
+// 로그인한 유저 정보 로드
 async function loadMyInfoAPI() {
   const res = await axios.get('/user');
   return res;
@@ -104,6 +109,28 @@ function* loadMyInfo() {
   }
 }
 
+// 특정 유저 정보 로드
+async function loadUserAPI(userId) {
+  const res = await axios.get(`/user/${userId}`);
+  return res;
+}
+
+function* loadUser(action) {
+  try {
+    const result = yield call(loadUserAPI, action.data);
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
@@ -113,8 +140,11 @@ function* watchSignUp() {
 function* watchLogOut() {
   yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
-function* watchLoadUser() {
+function* watchLoadMyInfo() {
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+function* watchLoadUser() {
+  yield takeLatest(LOAD_USER_REQUEST, loadUser);
 }
 
 export default function* userSaga() {
@@ -122,6 +152,7 @@ export default function* userSaga() {
     fork(watchLogIn),
     fork(watchSignUp),
     fork(watchLogOut),
+    fork(watchLoadMyInfo),
     fork(watchLoadUser),
   ]);
 }

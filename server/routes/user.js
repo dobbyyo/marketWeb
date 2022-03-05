@@ -7,7 +7,7 @@ const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 const router = express.Router();
 
-// /user 회원가입
+//  회원가입
 router.post("/signup", async (req, res, next) => {
   try {
     const existUser = await User.findOne({
@@ -67,7 +67,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
   })(req, res, next);
 });
 
-// 유저 정보 가져오기
+// 로그인 유저 정보 가져오기
 router.get("/", async (req, res, next) => {
   try {
     if (req.user) {
@@ -113,11 +113,38 @@ router.get("/:userId", async (req, res, next) => {
       const data = fullUserWithoutPassword.toJSON();
       // 시퀄라이즈에서 보내준 데이터는 제이슨이 아니므로 json으로 변경해줘야 사용가능.
 
-      res.status(200).json(fullUserWithoutPassword);
+      res.status(200).json(data);
     } else {
       res.status(404).json("존재하지 않는 사용자입니다.");
     }
-    console.log(req.headers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 특정 유저 게시글 가져오기
+router.get("/:userId/posts", async (req, res, next) => {
+  try {
+    const where = { userId: req.params.userId };
+    if (parseInt(req.query.lastId, 10)) {
+      where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+    }
+    const posts = await Post.findAll({
+      where,
+      limit: 10,
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: Comment,
+        },
+      ],
+    });
+    res.status(200).json(posts);
   } catch (error) {
     console.error(error);
     next(error);

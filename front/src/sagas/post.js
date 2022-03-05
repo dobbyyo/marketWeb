@@ -11,6 +11,9 @@ import {
   LOAD_POST_FAILURE,
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
+  LOAD_USER_POSTS_REQUEST,
+  LOAD_USER_POSTS_SUCCESS,
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
@@ -42,7 +45,7 @@ function* loadPosts(action) {
   }
 }
 
-// 특정 유저 게시글 불러오기
+// 특정 게시글 불러오기
 async function loadPostAPI(postId) {
   const res = await axios.get(`/post/${postId}`);
   return res;
@@ -59,6 +62,28 @@ function* loadPost(action) {
     console.log(err);
     yield put({
       type: LOAD_POST_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+// 특정 유저 게시글 전체 불러오기
+async function loadUserPostsAPI(userId, lastId) {
+  const res = axios.get(`/user/${userId}/posts?lastId=${lastId}`);
+  return res;
+}
+
+function* loadUserPosts(action) {
+  try {
+    const result = yield call(loadUserPostsAPI, action.data);
+    yield put({
+      type: LOAD_USER_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: LOAD_USER_POSTS_FAILURE,
       data: err.response.data,
     });
   }
@@ -154,7 +179,9 @@ function* watchUploadImages() {
 function* watchLoadPost() {
   yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
-
+function* watchLoadUserPosts() {
+  yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
+}
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),

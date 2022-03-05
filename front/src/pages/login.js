@@ -7,7 +7,6 @@ import Router from 'next/router';
 
 import { Box, Container, Form } from '../components/login/styled';
 import { LOG_IN_REQUEST } from '../reducers/user/userAction';
-import { loginRequestAction } from '../reducers/user/user';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -37,7 +36,7 @@ const Login = () => {
         password,
       },
     });
-  }, [loginRequestAction]);
+  }, [getValues]);
 
   useEffect(() => {
     if (me) {

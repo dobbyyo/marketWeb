@@ -53,7 +53,7 @@ const Header = () => {
           <li>문의</li>
           {me && (
             <li className="uploadItem">
-              <Link href="uploadform">
+              <Link href="/uploadform">
                 <a>물건 올리기</a>
               </Link>
             </li>

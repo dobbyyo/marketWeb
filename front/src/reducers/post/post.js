@@ -10,6 +10,9 @@ import {
   LOAD_POST_FAILURE,
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
+  LOAD_USER_POSTS_FAILURE,
+  LOAD_USER_POSTS_REQUEST,
+  LOAD_USER_POSTS_SUCCESS,
   REMOVE_IMAGE,
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
@@ -72,7 +75,7 @@ const reducer = (state = initialState, action) =>
         draft.loadPostsError = action.error;
         break;
 
-      // 특정 유저 글 불러오기
+      // 특정 유저 글한개 불러오기
       case LOAD_POST_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
@@ -84,6 +87,23 @@ const reducer = (state = initialState, action) =>
         draft.singlePost = action.data;
         break;
       case LOAD_POST_FAILURE:
+        draft.loadPostLoading = false;
+        draft.loadPostError = action.error;
+        break;
+
+      // 특정 유저 포스터 전체 로드
+      case LOAD_USER_POSTS_REQUEST:
+        draft.loadPostLoading = true;
+        draft.loadPostDone = false;
+        draft.loadPostError = null;
+        break;
+      case LOAD_USER_POSTS_SUCCESS:
+        draft.loadPostLoading = false;
+        draft.loadPostDone = true;
+        draft.mainPosts = action.data;
+        draft.hasMorePosts = action.data.length === 10;
+        break;
+      case LOAD_USER_POSTS_FAILURE:
         draft.loadPostLoading = false;
         draft.loadPostError = action.error;
         break;

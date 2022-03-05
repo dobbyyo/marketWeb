@@ -1,5 +1,4 @@
 import produce from 'immer';
-// import faker from 'faker';
 import {
   initialState,
   LOG_IN_REQUEST,
@@ -16,24 +15,10 @@ import {
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
 } from './userAction';
-
-// const dummyUser = (data) => ({
-//   ...data,
-//   nickname: faker.name.findName(),
-//   gender: faker.name.gender(),
-//   email: faker.internet.email(),
-//   username: faker.internet.userName(),
-//   id: 1,
-//   Posts: [{ id: 1 }],
-//   Followings: [{ cickname: '도비' }, { nickname: '다민' }],
-//   Followers: [{ cickname: '도비' }, { nickname: '다민' }],
-// });
-
-export const loginRequestAction = (data) => ({
-  type: LOG_IN_REQUEST,
-  data,
-});
 
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -52,7 +37,9 @@ const reducer = (state = initialState, action) =>
       case LOG_IN_FAILURE:
         draft.logInLoading = false;
         draft.loginError = action.error;
+
         break;
+      // 회원가입
       case SIGN_UP_REQUEST:
         draft.signUpLoading = true;
         draft.signUpDone = false;
@@ -65,7 +52,9 @@ const reducer = (state = initialState, action) =>
       case SIGN_UP_FAILURE:
         draft.signUpLoading = false;
         draft.signUpError = action.error;
+
         break;
+      // 로그아웃
       case LOG_OUT_REQUEST:
         draft.logOutLoading = true;
         draft.logOutError = null;
@@ -80,24 +69,44 @@ const reducer = (state = initialState, action) =>
         draft.logOutLoading = false;
         draft.logOutError = action.error;
         break;
+
+      // 로그인한 유저 정보 로드
       case LOAD_MY_INFO_REQUEST:
-        draft.logOutLoading = true;
-        draft.logOutError = null;
-        draft.logOutDone = false;
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoError = null;
+        draft.loadMyInfoDone = false;
         break;
       case LOAD_MY_INFO_SUCCESS:
-        draft.logOutLoading = false;
-        draft.logOutDone = true;
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoDone = true;
         draft.me = action.data;
         break;
       case LOAD_MY_INFO_FAILURE:
-        draft.logOutLoading = false;
-        draft.logOutError = action.error;
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoError = action.error;
         break;
 
+      // 특정 유저 로드
+      case LOAD_USER_REQUEST:
+        draft.loadUserLoading = true;
+        draft.loadUserError = null;
+        draft.loadUserDone = false;
+        break;
+      case LOAD_USER_SUCCESS:
+        draft.loadUserLoading = false;
+        draft.loadUserDone = true;
+        draft.userInfo = action.data;
+        break;
+      case LOAD_USER_FAILURE:
+        draft.loadUserLoading = false;
+        draft.loadUserError = action.error;
+        break;
+
+      // me 객체에 포스터 추가
       case ADD_POST_TO_ME:
         draft.me.Posts.unshift({ id: action.data });
         break;
+      // Me 객체에 포스터 제거
       case REMOVE_POST_TO_ME:
         draft.me.Posts = draft.me.Posts.filter(
           (data) => data.id !== action.data,
