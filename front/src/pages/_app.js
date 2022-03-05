@@ -1,11 +1,14 @@
 import Head from 'next/head';
 import React from 'react';
 import PropTypes from 'prop-types';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { reset } from 'styled-reset';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useRouter } from 'next/router';
 
 import Header from '../components/header/Header';
 import wrapper from '../store/configureStore';
+import theme from '../theme/theme';
 
 const GlobalStyle = createGlobalStyle`
   ${reset};
@@ -31,18 +34,40 @@ const GlobalStyle = createGlobalStyle`
     font-family: "SANJUGotgam";
     background-color: #E3E3DB;
   }
-
 `;
 
+const MotionDiv = styled(motion.div)``;
+
+const animationVariants = {
+  hidden: { opacity: 0 },
+  enter: { opacity: 1 },
+  exit: { opacity: 0 },
+};
+
 const DobbyMount = ({ Component }) => {
+  const router = useRouter();
+
   return (
     <>
-      <Head>
-        <title>Dobby</title>
-      </Head>
-      <Header />
-      <GlobalStyle />
-      <Component />
+      <ThemeProvider theme={theme}>
+        <AnimatePresence exitBeforeEnter>
+          <MotionDiv
+            key={router.route}
+            variants={animationVariants}
+            initial="hidden"
+            animate="enter"
+            exit="exit"
+            transition={{ type: 'linear' }}
+          >
+            <Head>
+              <title>Dobby</title>
+            </Head>
+            <GlobalStyle />
+            <Header />
+            <Component />
+          </MotionDiv>
+        </AnimatePresence>
+      </ThemeProvider>
     </>
   );
 };

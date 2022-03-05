@@ -1,99 +1,108 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faShop } from '@fortawesome/free-solid-svg-icons';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  faCartShopping,
+  faInfinity,
+  faSearch,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
+import { useAnimation } from 'framer-motion';
 
-import { Container, Logo, Menu, Toggled, User } from './styled';
-import { LOG_OUT_REQUEST } from '../../reducers/user/userAction';
+import {
+  Container,
+  Input,
+  Item,
+  Items,
+  Logo,
+  Main,
+  Right,
+  Search,
+  Check,
+  IconContainer,
+} from './styled';
 
 const Header = () => {
-  const [isToggled, isSetToggled] = useState(false);
-  const { me } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const inputAnimation = useAnimation();
+  const [searchOpen, setSearchOpen] = useState(false);
+  const router = useRouter();
+  console.log(router);
+  console.log(router.pathname);
 
-  const toggledHandler = () => {
-    isSetToggled((pre) => !pre);
+  let homeMatch, girlMatch, manMatch, sportMatch, saleMatch;
+
+  switch (router.pathname) {
+    case '/':
+      homeMatch = true;
+      break;
+    case '/aside':
+      girlMatch = true;
+      break;
+    case '/man':
+      manMatch = true;
+      break;
+    case '/sport':
+      sportMatch = true;
+      break;
+    case '/sale':
+      saleMatch = true;
+    default:
+      break;
+  }
+
+  const { register, handleSubmit } = useForm();
+  const onValid = (data) => {
+    console.log(data);
+    // Router.push(`/search?keyword=${data.keyword}`);
   };
 
-  const onLogOutClick = useCallback(() => {
-    dispatch({
-      type: LOG_OUT_REQUEST,
-    });
-  }, []);
+  const toggleSearch = () => {
+    if (searchOpen) {
+      inputAnimation.start({
+        scaleX: 0,
+      });
+    } else {
+      inputAnimation.start({ scaleX: 1 });
+    }
+    setSearchOpen((cur) => !cur);
+  };
+
   return (
-    <Container isToggled={isToggled}>
-      {/* 로고 */}
+    <Container>
       <Logo>
         <Link href="/">
           <a>
-            <FontAwesomeIcon icon={faShop} />
-            <h2>항상마켓</h2>
+            <FontAwesomeIcon icon={faInfinity} />
           </a>
         </Link>
       </Logo>
-      {/* 토글 */}
 
-      <Toggled onclick={toggledHandler}>
-        <Link href="/aside">
-          <a>
-            <FontAwesomeIcon icon={faBars} />
-          </a>
-        </Link>
-      </Toggled>
+      <Main>
+        <Items>
+          <Item>
+            <Link href="/aside">
+              <a>여성{girlMatch && <Check layoutId="circle" />}</a>
+            </Link>
+          </Item>
+          <Item>남성</Item>
+          <Item>아동</Item>
+          <Item>스포츠</Item>
+          <Item>세일</Item>
+        </Items>
+      </Main>
 
-      {/* 메뉴 */}
-      <Menu>
-        <ul>
-          <li>
-            <Link href="/items">
-              <a>물건</a>
-            </Link>
-          </li>
-          <li>문의</li>
-          {me && (
-            <li className="uploadItem">
-              <Link href="/uploadform">
-                <a>물건 올리기</a>
-              </Link>
-            </li>
-          )}
-        </ul>
-      </Menu>
-      {/* user */}
-      {me ? (
-        <>
-          <User>
-            <div>
-              <a
-                role="presentation"
-                onClick={onLogOutClick}
-                style={{ cursor: 'pointer' }}
-              >
-                로그아웃
-              </a>
-            </div>
-            <div>
-              <Link href="/profile">
-                <a style={{ fontSize: '14px' }}>{me.nickname}님 프로필</a>
-              </Link>
-            </div>
-          </User>
-        </>
-      ) : (
-        <User>
-          <div>
-            <Link href="/login">
-              <a>로그인</a>
-            </Link>
-          </div>
-          <div>
-            <Link href="/signup">
-              <a>회원가입</a>
-            </Link>
-          </div>
-        </User>
-      )}
+      <Right>
+        <Search onSubmit={handleSubmit(onValid)}>
+          <Input placeholder="검색어를 작성해주세요" />
+          <FontAwesomeIcon className="searchIcon" icon={faSearch} />
+        </Search>
+        <IconContainer>
+          <FontAwesomeIcon className="icon" icon={faUser} />
+          <FontAwesomeIcon className="icon" icon={faCartShopping} />
+        </IconContainer>
+      </Right>
     </Container>
   );
 };

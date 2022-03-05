@@ -40,9 +40,7 @@ const Home = () => {
       <Header>
         <BoxLeft>
           <div>
-            <h1>
-              We Always <br /> Provide <br /> Best Services
-            </h1>
+            <h1>{/* We Always <br /> Provide <br /> Best Services */}</h1>
           </div>
           <div>
             <p>
