@@ -43,7 +43,8 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
       title: req.body.title,
       content: req.body.content,
       price: req.body.price,
-      category: req.body.category,
+      clothes: req.body.clothes,
+      people: req.body.people,
       UserId: req.user.id,
     });
     if (req.body.image) {

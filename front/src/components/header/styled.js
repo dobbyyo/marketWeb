@@ -11,6 +11,7 @@ export const Container = styled(motion.div)`
   background-color: ${(props) => props.theme.black.top};
   color: ${(props) => props.theme.white.top};
   z-index: 999;
+  position: fixed;
 `;
 export const Logo = styled(motion.div)`
   width: 10%;
@@ -86,6 +87,69 @@ export const IconContainer = styled(motion.div)`
   display: flex;
   .icon {
     margin-right: 2rem;
+  }
+`;
+
+export const User = styled(motion.div)`
+  width: 20rem;
+  height: 20rem;
+  background-color: #fff;
+  z-index: 999;
+  position: fixed;
+  right: 3rem;
+  top: 0.5rem;
+  padding: 1rem 1rem;
+  .header {
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    .exit {
+      font-size: 1.2rem;
+      color: ${(props) => props.theme.black.top};
+      cursor: pointer;
+    }
+  }
+  .menu {
+    li {
+      padding-bottom: 1rem;
+      padding-top: 0.5rem;
+      border-bottom: 1px solid #000;
+      cursor: pointer;
+    }
+  }
+  .btn {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    button {
+      cursor: pointer;
+      margin-bottom: 1rem;
+      height: 3.5rem;
+      &:first-child {
+        background-color: #ae946d;
+        border: none;
+        color: ${(props) => props.theme.white.top};
+        font-size: 1.2rem;
+        border-radius: 0.3rem;
+        &:hover {
+          color: ${(props) => props.theme.black.top};
+          background-color: rgba(174, 148, 109, 0.9);
+        }
+      }
+      &:last-child {
+        border: none;
+        background-color: inherit;
+        color: ${(props) => props.theme.black.top};
+        font-size: 0.9rem;
+        border-bottom: 1px solid #111;
+        &:hover {
+          color: ${(props) => props.theme.black.row};
+          border: 2px solid #111;
+        }
+      }
+    }
   }
 `;
 

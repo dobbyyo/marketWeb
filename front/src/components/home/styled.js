@@ -1,40 +1,27 @@
 import styled from 'styled-components';
-import myImg from '../../img/bgimg.jpg';
+import boyImg from '../../img/a.jpg';
+import girlImg from '../../img/c.jpg';
 
 export const Container = styled.div`
   width: 100%;
-  height: 100vh;
-  /* background-color: #fff; */
 `;
 export const Header = styled.div`
-  display: flex;
-  align-items: center;
-  background-image: url(${myImg.src});
+  background-image: url(${boyImg.src});
   /* 이 부분 에러 고친거 블로그에 설명예정. */
   width: 100%;
-  height: 70%;
-  background-repeat: no-repeat;
+  height: 100vh;
   background-size: cover;
+  background-repeat: no-repeat;
+  /* background-position: left left; */
   padding: 0 2rem;
+  position: relative;
 `;
 
-export const BoxLeft = styled.div`
-  width: 50%;
-  height: 100%;
+export const Box = styled.div`
+  height: 50%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  div:first-child {
-    width: 100%;
-    h1 {
-      line-height: 5rem;
-      font-size: 4rem;
-      margin-bottom: 3rem;
-    }
-  }
-  div:nth-child(2) {
-    width: 100%;
+  div {
     p {
       line-height: 2rem;
       font-size: 1rem;
@@ -44,7 +31,50 @@ export const BoxLeft = styled.div`
   }
 `;
 
-export const Main = styled.div`
-  width: 70%;
-  margin: 0 auto;
+export const ManMain = styled.div`
+  position: absolute;
+  width: 80%;
+  bottom: 1;
+  left: 10%;
+`;
+export const Btn = styled.div`
+  height: 6rem;
+  width: 100%;
+  display: flex;
+  /* text-align: center; */
+  justify-content: center;
+  align-items: center;
+  /* background-color: red; */
+  button {
+    width: 200px;
+    height: 80%;
+    font-size: 1.4rem;
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+    border: none;
+    border-radius: 1rem;
+    background-color: ${(props) => props.theme.black.top};
+    color: ${(props) => props.theme.white.top};
+    &:hover {
+      background-color: ${(props) => props.theme.black.row};
+    }
+  }
+`;
+
+export const Bottom = styled.div`
+  background-image: url(${girlImg.src});
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  background-repeat: no-repeat;
+  padding: 0 2rem;
+  position: relative;
+`;
+
+export const GirlMain = styled.div`
+  position: absolute;
+  width: 80%;
+  bottom: 1;
+  left: 10%;
 `;

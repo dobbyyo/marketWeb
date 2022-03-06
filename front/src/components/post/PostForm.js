@@ -1,25 +1,26 @@
+/* eslint-disable no-alert */
 import React, { useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 
 import {
   ADD_POST_REQUEST,
   REMOVE_IMAGE,
   UPLOAD_IMAGES_REQUEST,
 } from '../../reducers/post/postAction';
-
-import { Container, Form, Header, Main } from './styled';
+import { Box, Container, Form } from '../login/styled';
 
 const PostForm = () => {
   const dispatch = useDispatch();
-  const { imagePaths, addPostDone } = useSelector((state) => state.post);
+  const { imagePaths } = useSelector((state) => state.post);
   const imageInput = useRef();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     getValues,
   } = useForm();
 
@@ -37,16 +38,14 @@ const PostForm = () => {
     [],
   );
 
-  const onSubmit = useCallback((data) => {
-    const { title, content, price, category } = getValues();
-    if (!title || !title.trim()) {
-      return alert('제목을 적어주세요');
+  const onSubmit = useCallback(() => {
+    const { title, content, price, clothes, people } = getValues();
+    console.log(clothes);
+    if (clothes === 'none') {
+      return alert('옷 카테고리를 정해주세요');
     }
-    if (!content || !content.trim()) {
-      return alert('설명을 적어주세요');
-    }
-    if (category === 'none') {
-      return alert('카테고리를 정해주세요.');
+    if (people === 'none') {
+      return alert('용도 카테고리를 정해주세요');
     }
     const formData = new FormData();
     imagePaths.forEach((img) => {
@@ -55,7 +54,8 @@ const PostForm = () => {
     formData.append('title', title);
     formData.append('content', content);
     formData.append('price', price);
-    formData.append('category', category);
+    formData.append('clothes', clothes);
+    formData.append('people', people);
     // 이미지가 없으면 formData 쓸필요 없다.
     // 하지만 multer를 쓰고 있으므로 사용해봄.
 
@@ -63,7 +63,7 @@ const PostForm = () => {
       type: ADD_POST_REQUEST,
       data: formData,
     });
-  }, []);
+  }, [imagePaths, getValues]);
 
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
@@ -85,15 +85,17 @@ const PostForm = () => {
 
   return (
     <Container>
-      <Header>
-        <h1>Post</h1>
-      </Header>
-      <Main>
+      <Box>
+        <header>
+          <FontAwesomeIcon className="header__icon" icon={faKey} />
+          <h2>포스터</h2>
+        </header>
+
         <Form
           onSubmit={handleSubmit(onSubmit, onError)}
           encType="multipart/form-data"
         >
-          {/* <label htmlFor="title">제목</label> */}
+          <label htmlFor="title">제목</label>
           <input
             id="title"
             name="title"
@@ -106,7 +108,7 @@ const PostForm = () => {
           {errors.title && errors.title.type === 'required' && (
             <span style={{ color: 'red' }}>필수로 작성해주세요</span>
           )}
-          {/* <label htmlFor="description">본문</label> */}
+          <label htmlFor="content">설명</label>
           <input
             id="content"
             name="content"
@@ -120,6 +122,7 @@ const PostForm = () => {
             <span style={{ color: 'red' }}>필수로 작성해주세요</span>
           )}
 
+          <label htmlFor="price">가격</label>
           <input
             id="price"
             name="price"
@@ -133,7 +136,8 @@ const PostForm = () => {
             <span style={{ color: 'red' }}>가격을 작성해주세요</span>
           )}
 
-          <select id="category" name="category" {...register('category')}>
+          <label htmlFor="clothes">옷 종류</label>
+          <select id="clothes" name="clothes" {...register('clothes')}>
             <option value="none">선택하세요</option>
             <option value="바지">바지</option>
             <option value="맨투맨">맨투맨</option>
@@ -141,6 +145,15 @@ const PostForm = () => {
             <option value="치마">치마</option>
             <option value="원피스">원피스</option>
             <option value="기타">기타</option>
+          </select>
+
+          <label htmlFor="people">용도</label>
+          <select id="people" name="people" {...register('people')}>
+            <option value="none">선택하세요</option>
+            <option value="공동">공동</option>
+            <option value="남성">남성</option>
+            <option value="여성">여성</option>
+            <option value="아동">아동</option>
           </select>
 
           <input
@@ -177,7 +190,7 @@ const PostForm = () => {
 
           <input className="button" type="submit" value="확인" />
         </Form>
-      </Main>
+      </Box>
     </Container>
   );
 };

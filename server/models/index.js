@@ -3,6 +3,7 @@ const user = require("./user");
 const post = require("./post");
 const image = require("./image");
 const comment = require("./comment");
+const hashtag = require("./hashtag");
 
 const env = process.env.NODE_ENV || "development";
 // 배포할떄만 프로덕션으로 변경 지금은 기본값.
@@ -20,6 +21,7 @@ const sequelize = new Sequelize(
 // Node랑 mysql을 연결하주는것 위 설정
 db.Post = post;
 db.User = user;
+db.Hashtag = hashtag;
 db.Image = image;
 db.Comment = comment;
 

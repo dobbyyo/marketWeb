@@ -93,7 +93,6 @@ function* loadUserPosts(action) {
 async function addPostAPI(data) {
   const res = await axios.post('/post', data);
   //  FormData는 {content: data} 이런식으로 감싸서 보내면 안된다.
-
   return res;
 }
 function* addPost(action) {

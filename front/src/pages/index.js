@@ -2,15 +2,23 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Slider from 'react-slick';
 import { END } from 'redux-saga';
+import axios from 'axios';
 
-import { BoxLeft, Container, Header, Main } from '../components/home/styled';
+import {
+  Bottom,
+  Box,
+  Btn,
+  Container,
+  Header,
+  ManMain,
+  GirlMain,
+} from '../components/home/styled';
 import PostCard from '../components/post/PostCard';
 import { LOAD_POSTS_REQUEST } from '../reducers/post/postAction';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user/userAction';
 import wrapper from '../store/configureStore';
-import axios from 'axios';
 
 const Home = () => {
   const { mainPosts } = useSelector((state) => state.post);
@@ -27,21 +35,18 @@ const Home = () => {
   //   }
   // }, []);
 
-  // const settings = {
-  //   dots: true,
-  //   infinite: true,
-  //   speed: 500,
-  //   slidesToShow: 2,
-  //   slidesToScroll: 2,
-  // };
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 3,
+  };
 
   return (
     <Container>
       <Header>
-        <BoxLeft>
-          <div>
-            <h1>{/* We Always <br /> Provide <br /> Best Services */}</h1>
-          </div>
+        <Box>
           <div>
             <p>
               We are always doing our best for the best <br /> quality and
@@ -49,15 +54,40 @@ const Home = () => {
               We respond immediately to customer feedback.
             </p>
           </div>
-        </BoxLeft>
+        </Box>
+        <ManMain>
+          {/* <Slider {...settings}>
+            {mainPosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </Slider> */}
+        </ManMain>
       </Header>
-      <Main>
-        {/* <Slider {...settings}>
-          {mainPosts.map((c) => (
-            <PostCard key={c.id} post={c} />
-          ))}
-        </Slider> */}
-      </Main>
+      <Btn>
+        <button type="button">상품 보러가기</button>
+      </Btn>
+
+      <Bottom>
+        <Box>
+          <div>
+            <p>
+              We are always doing our best for the best <br /> quality and
+              customer satisfaction. <br />
+              We respond immediately to customer feedback.
+            </p>
+          </div>
+        </Box>
+        <GirlMain>
+          {/* <Slider {...settings}>
+            {mainPosts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </Slider> */}
+        </GirlMain>
+      </Bottom>
+      <Btn>
+        <button type="button">상품 보러가기</button>
+      </Btn>
     </Container>
   );
 };
