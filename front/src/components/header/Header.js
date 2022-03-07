@@ -21,39 +21,17 @@ import {
   Main,
   Right,
   Search,
-  Check,
   IconContainer,
   User,
 } from './styled';
 import { LOG_OUT_REQUEST } from '../../reducers/user/userAction';
 
 const Header = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
 
-  let homeMatch, girlMatch, manMatch, sportMatch, saleMatch;
-
-  switch (router.pathname) {
-    case '/':
-      homeMatch = true;
-      break;
-    case '/aside':
-      girlMatch = true;
-      break;
-    case '/man':
-      manMatch = true;
-      break;
-    case '/sport':
-      sportMatch = true;
-      break;
-    case '/sale':
-      saleMatch = true;
-    default:
-      break;
-  }
-
   const { register, handleSubmit } = useForm();
+
   const onValid = (data) => {
     // console.log(data);
     // Router.push(`/search?keyword=${data.keyword}`);
@@ -86,13 +64,26 @@ const Header = () => {
         <Main>
           <Items>
             <Item>
-              <Link href="/aside">
-                <a>여성{girlMatch && <Check layoutId="circle" />}</a>
+              <Link href="/girl">
+                <a>여성</a>
               </Link>
             </Item>
-            <Item>남성</Item>
-            <Item>아동</Item>
-            <Item>공동</Item>
+            <Item>
+              <Link href="/man">
+                {/* {manMatch && <Check layoutId="circle" />} */}
+                <a>남성</a>
+              </Link>
+            </Item>
+            <Item>
+              <Link href="/child">
+                <a>아동</a>
+              </Link>
+            </Item>
+            <Item>
+              <Link href="/all">
+                <a>공용</a>
+              </Link>
+            </Item>
           </Items>
         </Main>
 

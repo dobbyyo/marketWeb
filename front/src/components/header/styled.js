@@ -11,7 +11,7 @@ export const Container = styled(motion.div)`
   background-color: ${(props) => props.theme.black.top};
   color: ${(props) => props.theme.white.top};
   z-index: 999;
-  position: fixed;
+  /* position: fixed; */
 `;
 export const Logo = styled(motion.div)`
   width: 10%;
@@ -46,14 +46,16 @@ export const Item = styled.li`
 `;
 export const Check = styled(motion.span)`
   position: absolute;
-  width: 100%;
-  height: 3px;
+  width: 2rem;
+  height: 0.1rem;
   border-radius: 5px;
   bottom: -5px;
   left: 0;
   right: 0;
   margin: 0 auto;
+  /* background-color: red; */
   background-color: ${(props) => props.theme.red};
+  /* z-index: 99999; */
 `;
 
 export const Search = styled.form`
