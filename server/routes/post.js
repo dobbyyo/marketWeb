@@ -70,15 +70,28 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
         },
         {
           model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
         },
         {
-          model: User,
+          model: User, // 게시글 작성자
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: User, // 좋아요 누른 사람
+          as: "Likers",
+          attributes: ["id", "nickname"],
         },
       ],
     });
     res.status(201).json(fullPost);
   } catch (error) {
     console.error(error);
+    next(error);
   }
 });
 // upload.single => req.file 객체에 한 개의 파일 업로드
@@ -88,7 +101,7 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
 // 특정 게시글 댓글 업로드
 router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
   try {
-    await Post.findOne({
+    const post = await Post.findOne({
       where: { id: req.params.postId },
     });
     if (!post) {
@@ -154,6 +167,17 @@ router.get("/:postId", async (req, res, next) => {
         },
         {
           model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+        {
+          model: User,
+          as: "Likers",
+          attributes: ["id", "nickname"],
         },
       ],
     });
@@ -164,4 +188,63 @@ router.get("/:postId", async (req, res, next) => {
   }
 });
 
+// 포스터 좋아요!
+router.patch("/:postId/like", isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findOne({ where: { id: req.params.postId } });
+    if (!post) {
+      return res.status(403).send("게시글이 존재하지 않습니다.");
+    }
+    await post.addLikers(req.user.id);
+    res.json({ PostId: post.id, UserId: req.user.id });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 포스터 싫어요ㅠㅠ
+router.delete("/:postId/like", isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findOne({ where: { id: req.params.postId } });
+    if (!post) {
+      return res.status(403).send("게시글이 존재하지 않습니다.");
+    }
+    await post.removeLikers(req.user.id);
+    res.json({ PostId: post.id, UserId: req.user.id });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 댓글 작성
+router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    });
+    if (!post) {
+      return res.status(403).send("존재하지 않는 게시글입니다.");
+    }
+    const comment = await Comment.create({
+      content: req.body.content,
+      PostId: parseInt(req.params.postId, 10),
+      UserId: req.user.id,
+    });
+    const fullComment = await Comment.findOne({
+      where: { id: comment.id },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
+    res.status(201).json(fullComment);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 module.exports = router;

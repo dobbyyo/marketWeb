@@ -64,8 +64,8 @@ const Card = ({ data }) => {
   const onClickPost = useCallback((postId) => {
     const id = postId;
     Router.push(`/post/${id}`);
-    console.log(id);
   }, []);
+
   return (
     <CardContainer onClick={() => onClickPost(data.id)}>
       {data.Images[0] ? (
@@ -80,7 +80,6 @@ const Card = ({ data }) => {
       <Box variants={infoVariants}>
         <div className="title">{data.title}</div>
         <div className="category">종류: {data.clothes}</div>
-        <div>{data.id}</div>
       </Box>
     </CardContainer>
   );

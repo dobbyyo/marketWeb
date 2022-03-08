@@ -11,8 +11,9 @@ import { LOAD_POST_REQUEST } from '../../reducers/post/postAction';
 import PostCard from '../../components/singlepost/PostCard';
 
 const Container = styled.div`
+  margin-top: 2rem;
   width: 100%;
-  height: 100vh;
+  /* height: 100vh; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -22,7 +23,6 @@ const Post = () => {
   // const router = useRouter();
   const { singlePost } = useSelector((state) => state.post);
   // const { id } = router.query;
-
   return (
     <Container>
       <PostCard post={singlePost} />

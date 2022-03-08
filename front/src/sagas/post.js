@@ -2,9 +2,15 @@ import axios from 'axios';
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 
 import {
+  ADD_COMMENT_FAILURE,
+  ADD_COMMENT_REQUEST,
+  ADD_COMMENT_SUCCESS,
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
+  LIKE_POST_FAILURE,
+  LIKE_POST_REQUEST,
+  LIKE_POST_SUCCESS,
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
@@ -17,6 +23,9 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  UNLIKE_POST_FAILURE,
+  UNLIKE_POST_REQUEST,
+  UNLIKE_POST_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
@@ -163,6 +172,73 @@ function* uploadImages(action) {
   }
 }
 
+// 포스터 좋아요
+async function likePostAPI(postId) {
+  const res = await axios.patch(`/post/${postId}/like`);
+  return res;
+}
+
+function* likePost(action) {
+  try {
+    const result = yield call(likePostAPI, action.data);
+    console.log(result.data);
+    yield put({
+      type: LIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: LIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 포스터 싫어요
+async function unlikePostAPI(data) {
+  const res = await axios.delete(`/post/${data}/like`);
+  return res;
+}
+
+function* unlikePost(action) {
+  try {
+    const result = yield call(unlikePostAPI, action.data);
+    yield put({
+      type: UNLIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: UNLIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 댓글 작성
+async function addCommentAPI(data) {
+  const res = await axios.post(`/post/${data.postId}/comment`, data);
+  return res;
+}
+
+function* addComment(action) {
+  try {
+    const result = yield call(addCommentAPI, action.data);
+    yield put({
+      type: ADD_COMMENT_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: ADD_COMMENT_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -181,6 +257,16 @@ function* watchLoadPost() {
 function* watchLoadUserPosts() {
   yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
+function* watchPostLike() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+function* watchPostUnLike() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
+}
+function* watchAddComment() {
+  yield takeLatest(ADD_COMMENT_REQUEST, addComment);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
@@ -188,5 +274,9 @@ export default function* postSaga() {
     fork(watchRemovePost),
     fork(watchUploadImages),
     fork(watchLoadPost),
+    fork(watchLoadUserPosts),
+    fork(watchPostLike),
+    fork(watchPostUnLike),
+    fork(watchAddComment),
   ]);
 }

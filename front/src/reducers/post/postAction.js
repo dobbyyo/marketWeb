@@ -28,6 +28,21 @@ export const initialState = {
   loadPostDone: false,
   loadPostError: null,
 
+  // 좋아요
+  likePostLoading: false,
+  likePostDone: false,
+  likePostError: null,
+
+  // 싫어요
+  unlikePostLoading: false,
+  unlikePostDone: false,
+  unlikePostError: null,
+
+  // 댓글 달기
+  addCommentLoading: false,
+  addCommentDone: false,
+  addCommentError: null,
+
   // 스크롤 내렸을때 이미지 더 불러오기
   morePosts: true,
 };
@@ -55,6 +70,18 @@ export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE';
 export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST';
 export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS';
 export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE';
+
+export const LIKE_POST_REQUEST = 'LIKE_POST_REQUEST';
+export const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS';
+export const LIKE_POST_FAILURE = 'LIKE_POST_FAILURE';
+
+export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST';
+export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS';
+export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
+
+export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
+export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
+export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 // 이미지는 기업에서 잘 안지운다고한다. 나중에 딥러니등 여러가지로 활용할수 있으므로.
