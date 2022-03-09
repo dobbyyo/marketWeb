@@ -23,11 +23,7 @@ const Post = () => {
   // const router = useRouter();
   const { singlePost } = useSelector((state) => state.post);
   // const { id } = router.query;
-  return (
-    <Container>
-      <PostCard post={singlePost} />
-    </Container>
-  );
+  return <Container>{singlePost && <PostCard post={singlePost} />}</Container>;
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(

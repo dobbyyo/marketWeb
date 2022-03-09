@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { ADD_COMMENT_REQUEST } from '../../reducers/post/postAction';
 
 const Container = styled.div`
-  width: 80%;
+  width: 100%;
   height: 100%;
 `;
 const Form = styled.form`
@@ -20,6 +20,21 @@ const Form = styled.form`
   input {
     width: 100%;
     height: 50%;
+  }
+`;
+
+const CommentUser = styled.div`
+  /* display: flex; */
+  /* border: 1px solid #000; */
+  width: 100%;
+  background-color: ${(props) => props.theme.white.row};
+  border-bottom: 1px solid #000;
+  height: 10rem;
+  overflow: scroll;
+
+  div {
+    /* margin: 1rem 1rem; */
+    padding: 1rem 0.4rem;
   }
 `;
 
@@ -50,10 +65,10 @@ const CommentCard = ({ post }) => {
     <Container>
       {post.Comments &&
         post.Comments.map((c) => (
-          <div>
-            {c.content}
-            <div>{c.nickname}</div>
-          </div>
+          <CommentUser key={c.id}>
+            <div>작성자: {c.User.nickname}</div>
+            <div>{c.content}</div>
+          </CommentUser>
         ))}
       <Form onSubmit={handleSubmit(onSubmitComment, onError)}>
         <input
