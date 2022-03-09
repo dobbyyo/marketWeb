@@ -43,6 +43,11 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 
+  // 검색
+  searchPostsLoading: false,
+  searchPostsDone: false,
+  searchPostsError: null,
+
   // 스크롤 내렸을때 이미지 더 불러오기
   morePosts: true,
 };
@@ -82,6 +87,10 @@ export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE';
+
+export const SEARCH_POSTS_REQUEST = 'SEARCH_POSTS_REQUEST';
+export const SEARCH_POSTS_SUCCESS = 'SEARCH_POSTS_SUCCESS';
+export const SEARCH_POSTS_FAILURE = 'SEARCH_POSTS_FAILURE';
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 // 이미지는 기업에서 잘 안지운다고한다. 나중에 딥러니등 여러가지로 활용할수 있으므로.

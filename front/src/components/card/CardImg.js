@@ -9,7 +9,6 @@ const Img = styled.img`
 `;
 
 const CardImg = ({ images }) => {
-  console.log(images);
   return (
     <>
       <Img

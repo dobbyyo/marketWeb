@@ -23,6 +23,9 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  SEARCH_POSTS_FAILURE,
+  SEARCH_POSTS_REQUEST,
+  SEARCH_POSTS_SUCCESS,
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
@@ -183,6 +186,24 @@ const reducer = (state = initialState, action) =>
         break;
       }
       case ADD_COMMENT_FAILURE:
+        draft.addCommentLoading = false;
+        draft.addCommentError = action.error;
+        break;
+
+      // 검색
+      case SEARCH_POSTS_REQUEST:
+        draft.addCommentLoading = true;
+        draft.addCommentDone = false;
+        draft.addCommentError = null;
+        break;
+      case SEARCH_POSTS_SUCCESS: {
+        draft.addCommentLoading = false;
+        draft.addCommentDone = true;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        // draft.hasMorePosts = action.data.length === 10;
+        break;
+      }
+      case SEARCH_POSTS_FAILURE:
         draft.addCommentLoading = false;
         draft.addCommentError = action.error;
         break;

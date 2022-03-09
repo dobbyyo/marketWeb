@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { Op } = require("sequelize");
 
 const { Post, Image, Comment, User } = require("../models");
 const { isLoggedIn } = require("./middlewares");
@@ -242,6 +243,46 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
       ],
     });
     res.status(201).json(fullComment);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 포스터 검색
+router.get("/:search/posts", async (req, res, next) => {
+  try {
+    const posts = await Post.findAll({
+      where: { title: decodeURIComponent(req.params.search) },
+      limit: 10,
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+              order: [["createdAt", "DESC"]],
+            },
+          ],
+        },
+        {
+          model: User,
+          as: "Likers",
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
+    // console.log(decodeURIComponent(req.params.search)),
+    res.status(200).json(posts);
   } catch (error) {
     console.error(error);
     next(error);

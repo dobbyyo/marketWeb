@@ -23,6 +23,9 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  SEARCH_POSTS_FAILURE,
+  SEARCH_POSTS_REQUEST,
+  SEARCH_POSTS_SUCCESS,
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
@@ -239,6 +242,30 @@ function* addComment(action) {
   }
 }
 
+// 검색
+async function SearchPostsAPI(data) {
+  const res = await axios.get(`/post/${encodeURIComponent(data)}/posts`, data);
+  return res;
+}
+
+function* searchPosts(action) {
+  try {
+    console.log(action.data);
+    const result = yield call(SearchPostsAPI, action.data);
+    console.log(result);
+    yield put({
+      type: SEARCH_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: SEARCH_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -266,6 +293,9 @@ function* watchPostUnLike() {
 function* watchAddComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
+function* watchSearchPosts() {
+  yield takeLatest(SEARCH_POSTS_REQUEST, searchPosts);
+}
 
 export default function* postSaga() {
   yield all([
@@ -278,5 +308,6 @@ export default function* postSaga() {
     fork(watchPostLike),
     fork(watchPostUnLike),
     fork(watchAddComment),
+    fork(watchSearchPosts),
   ]);
 }

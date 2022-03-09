@@ -30,14 +30,14 @@ const Post = () => {
   console.log(mainPosts);
   console.log(userInfo);
 
-  useEffect(() => {
-    const lastId = mainPosts[mainPosts.length - 1]?.id;
-    dispatch({
-      type: LOAD_POSTS_REQUEST,
-      lastId,
-      data: id,
-    });
-  }, []);
+  // useEffect(() => {
+  //   const lastId = mainPosts[mainPosts.length - 1]?.id;
+  //   dispatch({
+  //     type: LOAD_POSTS_REQUEST,
+  //     lastId,
+  //     data: id,
+  //   });
+  // }, []);
   return <Container></Container>;
 };
 

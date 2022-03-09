@@ -9,7 +9,7 @@ import {
   faX,
 } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
+import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -30,11 +30,18 @@ const Header = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, getValues } = useForm();
 
-  const onValid = (data) => {
-    // console.log(data);
-    // Router.push(`/search?keyword=${data.keyword}`);
+  const onSubmit = useCallback(() => {
+    const { search } = getValues();
+    if (search.length === 0 || search.trim().length === 0) {
+      return alert('검색어를 입력해주세요');
+    }
+    return Router.push(`/title/${search}`);
+  }, [getValues]);
+
+  const onError = (error) => {
+    console.log(error);
   };
 
   const [userOpen, setUserOpen] = useState(false);
@@ -88,8 +95,13 @@ const Header = () => {
         </Main>
 
         <Right>
-          <Search onSubmit={handleSubmit(onValid)}>
-            <Input placeholder="검색어를 작성해주세요" />
+          <Search onSubmit={handleSubmit(onSubmit, onError)}>
+            <Input
+              placeholder="검색어를 작성해주세요"
+              id="search"
+              type="text"
+              {...register('search')}
+            />
             <FontAwesomeIcon className="searchIcon" icon={faSearch} />
           </Search>
           <IconContainer>
