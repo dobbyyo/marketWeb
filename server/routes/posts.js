@@ -14,11 +14,17 @@ router.get("/", async (req, res, next) => {
     const posts = await Post.findAll({
       // 모든 게시물 가져오기
       // where: { id: lastId },
+      // where,
       limit: 10,
       // offset: 100 // 101 ~ 110 즉 시작위치 뜻
       // offset은 치명적인 단점이 있다. 중간에 삭제하면 어떤 게시글을 안불러올수가 있으므로 사용x
       // 그래서 lastId를 이용한다.
-      order: [[["createdAt", "DESC"]]],
+      order: [
+        [
+          ["createdAt", "DESC"],
+          // [Comment, "createdAt", "DESC"],
+        ],
+      ],
       include: [
         {
           model: User,
@@ -28,6 +34,12 @@ router.get("/", async (req, res, next) => {
         },
         {
           model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
         },
         {
           model: User,

@@ -12,7 +12,6 @@ import {
 
 const Container = styled.div`
   width: 100%;
-  /* background-color: red; */
   button {
     width: 100%;
     border: none;

@@ -77,10 +77,8 @@ const CommentCard = ({ post }) => {
       {post.Comments &&
         post.Comments.map((c) => (
           <CommentUser key={c.id}>
-            <>
-              <div>작성자: {c.User.nickname}</div>
-              <div>{c.content}</div>
-            </>
+            <div>작성자: {c.User.nickname}</div>
+            <div>{c.content}</div>
           </CommentUser>
         ))}
       <Form onSubmit={handleSubmit(onSubmitComment, onError)}>
