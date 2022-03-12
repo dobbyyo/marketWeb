@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import Router from 'next/router';
 
 import {
+  DELETE_USER_REQUEST,
   LOG_OUT_REQUEST,
   NICKNAME_CHANGE_REQUEST,
   PASSWORD_CHANGE_REQUEST,
@@ -33,7 +34,7 @@ const UserForm = () => {
   const [newNickname, setNewNickname] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
   const dispatch = useDispatch();
-  const { passwordChangeDone, passwordChangeLoading } = useSelector(
+  const { passwordChangeDone, passwordChangeLoading, me } = useSelector(
     (state) => state.user,
   );
 
@@ -69,6 +70,15 @@ const UserForm = () => {
       type: PASSWORD_CHANGE_REQUEST,
       data: { currentPassword, changePassword },
     });
+  }, []);
+
+  const onSubmitDeleteUser = useCallback(() => {
+    console.log(me.id);
+    dispatch({
+      type: DELETE_USER_REQUEST,
+      data: me.id,
+    });
+    Router.push('/');
   }, []);
 
   useEffect(() => {
@@ -125,7 +135,9 @@ const UserForm = () => {
           <input type="submit" value="확인" />
         </form>
       )}
-      <button type="button">회원탈퇴</button>
+      <button type="button" onClick={onSubmitDeleteUser}>
+        회원탈퇴
+      </button>
     </Container>
   );
 };

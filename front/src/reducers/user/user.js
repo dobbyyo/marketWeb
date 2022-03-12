@@ -36,6 +36,9 @@ import {
   PASSWORD_CHANGE_REQUEST,
   PASSWORD_CHANGE_SUCCESS,
   PASSWORD_CHANGE_FAILURE,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAILURE,
 } from './userAction';
 
 const reducer = (state = initialState, action) =>
@@ -216,6 +219,22 @@ const reducer = (state = initialState, action) =>
       case PASSWORD_CHANGE_FAILURE:
         draft.passwordChangeLoading = false;
         draft.passwordChangeError = action.error;
+        break;
+
+      // 회원탈퇴
+      case DELETE_USER_REQUEST:
+        draft.deleteUserLoading = true;
+        draft.deleteUserError = null;
+        draft.deleteUserDone = false;
+        break;
+      case DELETE_USER_SUCCESS:
+        draft.deleteUserLoading = false;
+        draft.deleteUserDone = true;
+        draft.me = null;
+        break;
+      case DELETE_USER_FAILURE:
+        draft.deleteUserLoading = false;
+        draft.deleteUserError = action.error;
         break;
 
       // me 객체에 포스터 추가

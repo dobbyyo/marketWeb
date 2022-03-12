@@ -54,6 +54,11 @@ export const initialState = {
   passwordChangeLoading: false,
   passwordChangeDone: false,
   passwordChangeError: null,
+
+  // 회원탈퇴
+  deleteUserLoading: false,
+  deleteUserDone: false,
+  deleteUserError: null,
 };
 
 // 로그인
@@ -110,6 +115,11 @@ export const NICKNAME_CHANGE_FAILURE = 'NICKNAME_CHANGE_FAILURE';
 export const PASSWORD_CHANGE_REQUEST = 'PASSWORD_CHANGE_REQUEST';
 export const PASSWORD_CHANGE_SUCCESS = 'PASSWORD_CHANGE_SUCCESS';
 export const PASSWORD_CHANGE_FAILURE = 'PASSWORD_CHANGE_FAILURE';
+
+// 비밀번호 Change
+export const DELETE_USER_REQUEST = 'DELETE_USER_REQUEST';
+export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
+export const DELETE_USER_FAILURE = 'DELETE_USER_FAILURE';
 
 // 포스터에서 게시글 추가할때 자기 ID에 추가하는 액션
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';

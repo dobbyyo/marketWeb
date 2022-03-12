@@ -39,11 +39,12 @@ const PostCard = ({ post }) => {
     if (!id) {
       return alert('로그인이 필요합니다.');
     }
+    console.log(post.id);
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
     });
-    return Router.push('/');
+    // return Router.push('/');
   });
 
   const onClickComment = useCallback(() => {

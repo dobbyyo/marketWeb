@@ -44,14 +44,6 @@ const Edit = ({ post }) => {
 
   const onSubmit = useCallback(() => {
     const { title, content, price, clothes, people } = getValues();
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
-    formData.append('price', price);
-    formData.append('clothes', clothes);
-    formData.append('people', people);
-
-    console.log(formData);
     dispatch({
       type: UPDATE_POST_REQUEST,
       data: { title, content, price, clothes, people, PostId: post.id },

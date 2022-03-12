@@ -147,9 +147,13 @@ router.post(
 // 게시글 삭제
 router.delete("/:postId", isLoggedIn, async (req, res, next) => {
   try {
+    await Comment.destroy({
+      where: { PostId: req.params.postId },
+    });
     await Post.destroy({
       where: { id: req.params.postId, UserId: req.user.id },
     });
+    console.log(req.params.postId);
     res.json({ PostId: req.params.postId });
   } catch (error) {
     console.error(error);

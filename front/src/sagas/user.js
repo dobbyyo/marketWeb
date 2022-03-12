@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import {
+  DELETE_USER_FAILURE,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
   FOLLOW_FAILURE,
   FOLLOW_REQUEST,
   FOLLOW_SUCCESS,
@@ -277,6 +280,27 @@ function* passwordChange(action) {
   }
 }
 
+// 회원탈퇴
+function deleteUserAPI(userId) {
+  return axios.delete(`/user/${userId}`);
+}
+
+function* deleteUser(action) {
+  try {
+    const result = yield call(deleteUserAPI, action.data);
+    yield put({
+      type: DELETE_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: DELETE_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
@@ -310,6 +334,9 @@ function* watchNicknameChange() {
 function* watchPasswordChange() {
   yield takeLatest(PASSWORD_CHANGE_REQUEST, passwordChange);
 }
+function* watchDeleteUser() {
+  yield takeLatest(DELETE_USER_REQUEST, deleteUser);
+}
 
 export default function* userSaga() {
   yield all([
@@ -324,5 +351,6 @@ export default function* userSaga() {
     fork(watchLoadFollowings),
     fork(watchNicknameChange),
     fork(watchPasswordChange),
+    fork(watchDeleteUser),
   ]);
 }

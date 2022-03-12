@@ -323,4 +323,24 @@ router.patch("/password", isLoggedIn, async (req, res, next) => {
   }
 });
 
+// 회원탈퇴
+router.delete("/:userId", isLoggedIn, async (req, res, next) => {
+  try {
+    await Comment.destroy({
+      where: { UserId: req.params.userId },
+    });
+    await Post.destroy({
+      where: { UserId: req.params.userId },
+    });
+    await User.destroy({
+      where: { id: req.user.id },
+    });
+    res.status(200).json("SUCCESS");
+  } catch (error) {
+    console.log(req.params.userId);
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;
