@@ -3,8 +3,12 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { useRouter } from 'next/router';
 
-import { ADD_COMMENT_REQUEST } from '../../reducers/post/postAction';
+import {
+  ADD_COMMENT_REQUEST,
+  LOAD_POST_REQUEST,
+} from '../../reducers/post/postAction';
 
 const Container = styled.div`
   width: 100%;
@@ -47,6 +51,9 @@ const CommentCard = ({ post }) => {
     formState: { errors },
     getValues,
   } = useForm();
+  const router = useRouter();
+  const { postId } = router.query;
+  console.log(postId);
 
   const onSubmitComment = useCallback(() => {
     const { content } = getValues();
@@ -55,19 +62,25 @@ const CommentCard = ({ post }) => {
       type: ADD_COMMENT_REQUEST,
       data: { content, postId: post.id, userId: id },
     });
+    dispatch({
+      type: LOAD_POST_REQUEST,
+      data: postId,
+    });
   }, []);
 
   const onError = (error) => {
     console.log(error);
   };
-  console.log(post);
+
   return (
     <Container>
       {post.Comments &&
         post.Comments.map((c) => (
           <CommentUser key={c.id}>
-            <div>작성자: {c.User.nickname}</div>
-            <div>{c.content}</div>
+            <>
+              <div>작성자: {c.User.nickname}</div>
+              <div>{c.content}</div>
+            </>
           </CommentUser>
         ))}
       <Form onSubmit={handleSubmit(onSubmitComment, onError)}>

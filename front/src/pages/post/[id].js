@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import { END } from 'redux-saga';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // import { useRouter } from 'next/router';
 
 import wrapper from '../../store/configureStore';
@@ -20,9 +20,8 @@ const Container = styled.div`
 `;
 
 const Post = () => {
-  // const router = useRouter();
   const { singlePost } = useSelector((state) => state.post);
-  // const { id } = router.query;
+
   return <Container>{singlePost && <PostCard post={singlePost} />}</Container>;
 };
 

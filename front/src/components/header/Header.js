@@ -55,6 +55,7 @@ const Header = () => {
       type: LOG_OUT_REQUEST,
     });
     onClickUser();
+    Router.push('/');
   }, []);
 
   return (
@@ -126,7 +127,15 @@ const Header = () => {
             />
           </div>
           <ul className="menu">
-            <li>마이페이지</li>
+            {me && (
+              <>
+                <li>
+                  <Link href={`/user/${me.id}`}>
+                    <a>마이페이지</a>
+                  </Link>
+                </li>
+              </>
+            )}
             <li>위시리스트</li>
             <li>고객지원</li>
           </ul>

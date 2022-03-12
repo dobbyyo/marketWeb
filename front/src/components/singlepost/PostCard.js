@@ -1,12 +1,13 @@
-import React, { useCallback, useState } from 'react';
-import styled from 'styled-components';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowAltCircleLeft,
+  faBars,
   faCommentDots,
   faHeart,
   faHeartCrack,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,104 +16,35 @@ import ImgCard from './ImgCard';
 import noImg from '../../img/noimg.png';
 import {
   LIKE_POST_REQUEST,
+  REMOVE_POST_REQUEST,
   UNLIKE_POST_REQUEST,
 } from '../../reducers/post/postAction';
 import CommentCard from '../commnet/CommentCard';
-
-const BoxContainer = styled.div`
-  width: 50%;
-  /* height: 90rem; */
-  background-color: ${(props) => props.theme.white.top};
-  color: ${(props) => props.theme.black.top};
-  border-radius: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-`;
-const Header = styled.div`
-  width: 100%;
-  height: 5rem;
-  display: flex;
-  font-size: 1.4rem;
-  border-bottom: 2px solid #000;
-  align-items: center;
-  padding: 0 2rem;
-  .header__left {
-    width: 50%;
-    display: flex;
-    div {
-      margin-left: 1rem;
-    }
-  }
-  .header__right {
-    width: 50%;
-    display: flex;
-    justify-content: end;
-  }
-`;
-const Info = styled.div`
-  width: 100%;
-  margin-top: 1rem;
-  padding: 0 2rem;
-  .main {
-    margin-top: 1rem;
-    width: 100%;
-    height: 10rem;
-    border: 1px solid #000;
-  }
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    border-top: 2px solid #000;
-    padding: 1rem 0;
-    align-items: center;
-    .commentBtn {
-      width: 5rem;
-      height: 2rem;
-      background-color: ${(props) => props.theme.red};
-      border: none;
-      border-radius: 0.5rem;
-      color: ${(props) => props.theme.white.top};
-      font-size: 1.1rem;
-      font-weight: bold;
-      &:hover {
-        opacity: 0.8;
-      }
-    }
-  }
-  .middle {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    button {
-      width: 5rem;
-      height: 2rem;
-      background-color: ${(props) => props.theme.red};
-      border: none;
-      border-radius: 0.5rem;
-      color: ${(props) => props.theme.white.top};
-      &:hover {
-        opacity: 0.8;
-      }
-      .icon {
-        margin-right: 0.5rem;
-      }
-    }
-  }
-`;
-
-const Img = styled.img`
-  width: 90%;
-  height: 20rem;
-  border-radius: 1rem;
-  margin-top: 1rem;
-`;
+import { LOAD_MY_INFO_REQUEST } from '../../reducers/user/userAction';
+import Edit from './Edit';
+import { BoxContainer, Header, Img, Info, Option } from './styled';
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
   const [commentOpen, setCommentOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch({
+      type: LOAD_MY_INFO_REQUEST,
+    });
+  }, []);
+
+  const onRemovePost = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다.');
+    }
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
+    return Router.push('/');
+  });
 
   const onClickComment = useCallback(() => {
     setCommentOpen((cur) => !cur);
@@ -141,60 +73,98 @@ const PostCard = ({ post }) => {
     });
   }, [id]);
 
-  const liked = post && post.Likers.find((v) => v.id === id);
-  console.log(commentOpen);
+  let liked;
+  if (post.Likers) {
+    liked = post && post.Likers.find((v) => v.id === id);
+  }
+
+  const [bars, setBars] = useState(false);
+  const onClickBars = useCallback(() => {
+    setBars((cur) => !cur);
+  }, [setBars]);
+
+  const [edit, setEdit] = useState(false);
+
+  const onClickChange = useCallback(() => {
+    setEdit((cur) => !cur);
+  }, [setEdit]);
+
   return (
     <BoxContainer>
-      {post && (
+      {edit ? (
+        <Edit post={post} />
+      ) : (
         <>
-          <Header>
-            <div className="header__left">
-              <FontAwesomeIcon
-                icon={faArrowAltCircleLeft}
-                onClick={onClickBack}
-                style={{ cursor: 'pointer' }}
-              />
-              <div>{post.User.nickname}</div>
-            </div>
-            <div className="header__right">제목: {post.title}</div>
-          </Header>
-          {post.Images[0] ? (
-            <ImgCard images={post.Images} />
-          ) : (
-            <Img src={noImg.src} alt="img" />
-          )}
-          <Info>
-            <div className="middle">
-              <div>가격: {post.price}</div>
-
-              {liked ? (
-                <button type="button" onClick={onClickUnLike}>
-                  <FontAwesomeIcon icon={faHeartCrack} className="icon" />
-                  싫어요
-                </button>
+          {post && (
+            <>
+              <Header>
+                <div className="header__left">
+                  <FontAwesomeIcon
+                    icon={faArrowAltCircleLeft}
+                    onClick={onClickBack}
+                    style={{ cursor: 'pointer' }}
+                  />
+                  <div>{post.User.nickname}</div>
+                </div>
+                <div className="middle">
+                  <div>{post.title}</div>
+                </div>
+                {id && post.User.id === id && (
+                  <div className="header__right">
+                    <FontAwesomeIcon icon={faBars} onClick={onClickBars} />
+                    {bars && (
+                      <Option>
+                        <FontAwesomeIcon icon={faXmark} onClick={onClickBars} />
+                        <button type="button" onClick={onRemovePost}>
+                          게시글 삭제
+                        </button>
+                        <button type="button" onClick={onClickChange}>
+                          게시글 수정
+                        </button>
+                      </Option>
+                    )}
+                  </div>
+                )}
+              </Header>
+              {post.Images[0] ? (
+                <ImgCard images={post.Images} />
               ) : (
-                <button type="button" onClick={onClickLike}>
-                  <FontAwesomeIcon icon={faHeart} className="icon" />
-                  좋아요
-                </button>
+                <Img src={noImg.src} alt="img" />
               )}
-            </div>
-            <div className="main">{post.content}</div>
-            <div className="footer">
-              <div>종류: {post.clothes}</div>
-              <div>
-                <button
-                  type="button"
-                  className="commentBtn"
-                  onClick={onClickComment}
-                >
-                  <FontAwesomeIcon icon={faCommentDots} />
-                </button>
-              </div>
-              <div>성별: {post.people}</div>
-            </div>
-            {commentOpen ? <CommentCard post={post} /> : null}
-          </Info>
+              <Info>
+                <div className="middle">
+                  <div>가격: {post.price}</div>
+
+                  {liked ? (
+                    <button type="button" onClick={onClickUnLike}>
+                      <FontAwesomeIcon icon={faHeartCrack} className="icon" />
+                      싫어요
+                    </button>
+                  ) : (
+                    <button type="button" onClick={onClickLike}>
+                      <FontAwesomeIcon icon={faHeart} className="icon" />
+                      좋아요
+                    </button>
+                  )}
+                </div>
+                <div className="main">{post.content}</div>
+                <div className="footer">
+                  <div>종류: {post.clothes}</div>
+                  <div>
+                    <button
+                      type="button"
+                      className="commentBtn"
+                      onClick={onClickComment}
+                    >
+                      <FontAwesomeIcon icon={faCommentDots} />
+                    </button>
+                  </div>
+                  <div>성별: {post.people}</div>
+                </div>
+                {commentOpen ? <CommentCard post={post} /> : null}
+              </Info>
+            </>
+          )}
         </>
       )}
     </BoxContainer>

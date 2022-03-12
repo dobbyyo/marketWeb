@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import Router from 'next/router';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 import CardImg from './CardImg';
 import noImg from '../../img/noimg.png';
@@ -22,7 +24,7 @@ const Box = styled(motion.div)`
   background-color: rgba(0, 0, 0, 0.9);
   width: 100%;
   height: 5rem;
-  opacity: 0;
+  /* opacity: 0; */
   .title {
     display: flex;
     justify-content: center;
@@ -46,6 +48,23 @@ const CardContainer = styled(motion.div)`
     ${Box} {
       opacity: 1;
     }
+  }
+`;
+
+const Info = styled.div`
+  display: flex;
+  height: 70%;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+  .like {
+    color: ${(props) => props.theme.red};
+    font-size: 2rem;
+  }
+  .likeNumber {
+    position: absolute;
+    top: 35%;
+    right: 20%;
   }
 `;
 
@@ -79,7 +98,15 @@ const Card = ({ data }) => {
       )}
       <Box variants={infoVariants}>
         <div className="title">{data.title}</div>
-        <div className="category">종류: {data.clothes}</div>
+        <Info>
+          <div>종류: {data.clothes}</div>
+          <div>
+            <FontAwesomeIcon className="like" icon={faHeart} />
+            {data.Likers && (
+              <div className="likeNumber">{data.Likers.length}</div>
+            )}
+          </div>
+        </Info>
       </Box>
     </CardContainer>
   );
@@ -96,6 +123,7 @@ Card.propTypes = {
     people: PropTypes.string,
     price: PropTypes.string,
     title: PropTypes.string,
+    Likers: PropTypes.arrayOf(PropTypes.any),
   }).isRequired,
 };
 export default Card;

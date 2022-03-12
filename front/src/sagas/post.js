@@ -29,6 +29,9 @@ import {
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
+  UPDATE_POST_FAILURE,
+  UPDATE_POST_REQUEST,
+  UPDATE_POST_SUCCESS,
   UPLOAD_IMAGES_FAILURE,
   UPLOAD_IMAGES_REQUEST,
   UPLOAD_IMAGES_SUCCESS,
@@ -250,9 +253,7 @@ async function SearchPostsAPI(data) {
 
 function* searchPosts(action) {
   try {
-    console.log(action.data);
     const result = yield call(SearchPostsAPI, action.data);
-    console.log(result);
     yield put({
       type: SEARCH_POSTS_SUCCESS,
       data: result.data,
@@ -261,6 +262,28 @@ function* searchPosts(action) {
     console.log(err);
     yield put({
       type: SEARCH_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 업데이트 포스터
+async function updatePostAPI(data) {
+  const res = await axios.patch(`/post/${data.PostId}`, data);
+  return res;
+}
+
+function* updatePost(action) {
+  try {
+    const result = yield call(updatePostAPI, action.data);
+    yield put({
+      type: UPDATE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: UPDATE_POST_FAILURE,
       error: err.response.data,
     });
   }
@@ -296,6 +319,9 @@ function* watchAddComment() {
 function* watchSearchPosts() {
   yield takeLatest(SEARCH_POSTS_REQUEST, searchPosts);
 }
+function* watchUpdatePost() {
+  yield takeLatest(UPDATE_POST_REQUEST, updatePost);
+}
 
 export default function* postSaga() {
   yield all([
@@ -309,5 +335,6 @@ export default function* postSaga() {
     fork(watchPostUnLike),
     fork(watchAddComment),
     fork(watchSearchPosts),
+    fork(watchUpdatePost),
   ]);
 }

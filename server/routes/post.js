@@ -288,4 +288,37 @@ router.get("/:search/posts", async (req, res, next) => {
     next(error);
   }
 });
+
+// 포스터 수정
+router.patch("/:postId", isLoggedIn, async (req, res, next) => {
+  try {
+    await Post.update(
+      {
+        title: req.body.title,
+        content: req.body.content,
+        price: req.body.price,
+        clothes: req.body.clothes,
+        people: req.body.people,
+      },
+      {
+        where: {
+          id: req.params.postId,
+          UserId: req.user.id,
+        },
+      }
+    );
+    res.status(200).json({
+      PostId: parseInt(req.params.postId, 10),
+      title: req.body.title,
+      content: req.body.content,
+      price: req.body.price,
+      clothes: req.body.clothes,
+      people: req.body.people,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;

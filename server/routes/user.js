@@ -32,7 +32,7 @@ router.post("/signup", async (req, res, next) => {
   }
 });
 
-// 로그인;
+// 로그인
 router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     // 서버, 성공, 클라이언트
@@ -60,6 +60,16 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
             model: Post,
             attributes: ["id"],
           },
+          {
+            model: User,
+            as: "Followings",
+            attributes: ["id", "nickname"],
+          },
+          {
+            model: User,
+            as: "Followers",
+            attributes: ["id", "nickname"],
+          },
         ],
       });
       return res.status(200).json(fullUserWithoutPassword);
@@ -81,9 +91,18 @@ router.get("/", async (req, res, next) => {
             model: Post,
             attributes: ["id"],
           },
+          {
+            model: User,
+            as: "Followings",
+            attributes: ["id", "nickname"],
+          },
+          {
+            model: User,
+            as: "Followers",
+            attributes: ["id", "nickname"],
+          },
         ],
       });
-      console.log(req.headers);
       res.status(200).json(fullUserWithoutPassword);
     } else {
       res.status(200).json(null);
@@ -107,12 +126,24 @@ router.get("/:userId", async (req, res, next) => {
           model: Post,
           attributes: ["id"],
         },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
       ],
     });
     if (fullUserWithoutPassword) {
       const data = fullUserWithoutPassword.toJSON();
       // 시퀄라이즈에서 보내준 데이터는 제이슨이 아니므로 json으로 변경해줘야 사용가능.
-
+      data.Posts = data.Posts.length; // 개인정보 침해 예방
+      data.Followers = data.Followers.length;
+      data.Followings = data.Followings.length;
       res.status(200).json(data);
     } else {
       res.status(404).json("존재하지 않는 사용자입니다.");
@@ -141,6 +172,21 @@ router.get("/:userId/posts", async (req, res, next) => {
         },
         {
           model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+              order: [["createdAt", "DESC"]],
+            },
+          ],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: User,
+          as: "Likers",
+          attributes: ["id", "nickname"],
         },
       ],
     });
@@ -156,6 +202,125 @@ router.post("/logout", isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();
   res.send("SUCCESS");
+});
+
+// get 팔로워
+router.get("/followers", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: { id: req.user.id },
+    });
+    if (!user) {
+      res.status(403).send("존재 하지 않은 유저입니다.");
+    }
+    const followers = await user.getFollowers({
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// get 팔로잉
+router.get("/followings", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: { id: req.user.id },
+    });
+    if (!user) {
+      res.status(403).send("존재 하지 않은 유저입니다.");
+    }
+    const followings = await user.getFollowings({
+      limit: parseInt(req.query.limit, 10),
+    });
+    res.status(200).json(followings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 팔로워
+router.patch("/:userId/follow", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: { id: req.params.userId },
+    });
+    if (!user) {
+      res.status(403).send("유저가 존재하지 않습니다.");
+    }
+    await user.addFollowers(req.user.id); //패스포트에 저장된 유저 정보
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 언팔로워
+router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: { id: req.params.userId },
+    });
+    if (!user) {
+      res.status(403).send("유저가 존재하지 않습니다.");
+    }
+    await user.removeFollowers(req.user.id); //패스포트에 저장된 로그인한 유저 정보
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 닉네임 변경
+router.patch("/nickname", isLoggedIn, async (req, res, next) => {
+  try {
+    await User.update(
+      {
+        nickname: req.body.nickname,
+      },
+      {
+        where: { id: req.user.id },
+      }
+    );
+    res.status(200).json({ nickname: req.body.nickname });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 비밀번호 변경
+router.patch("/password", isLoggedIn, async (req, res, next) => {
+  try {
+    const comparePassword = await bcrypt.compare(
+      req.body.currentPassword,
+      req.user.password
+    );
+    const hashedPassword = await bcrypt.hash(req.body.changePassword, 10);
+    if (comparePassword) {
+      await User.update(
+        {
+          password: hashedPassword,
+        },
+        {
+          where: { id: req.user.id },
+        }
+      );
+    } else {
+      console.log(comparePassword);
+      return res.status(403).send("비밀번호가 일치하지 않습니다.");
+    }
+    console.log(comparePassword);
+    res.status(200).json("SUCCESS");
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
 });
 
 module.exports = router;

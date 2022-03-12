@@ -5,7 +5,6 @@ import styled from 'styled-components';
 const Img = styled.img`
   width: 100%;
   height: 20rem;
-  /* background-image: cover; */
 `;
 
 const CardImg = ({ images }) => {
@@ -19,7 +18,7 @@ const CardImg = ({ images }) => {
   );
 };
 
-CardImg.protoTypes = {
+CardImg.propTypes = {
   images: PropTypes.arrayOf(
     PropTypes.shape({
       src: PropTypes.string,

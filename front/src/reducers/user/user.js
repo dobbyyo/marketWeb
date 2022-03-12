@@ -18,6 +18,24 @@ import {
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE,
+  FOLLOW_REQUEST,
+  FOLLOW_SUCCESS,
+  FOLLOW_FAILURE,
+  UNFOLLOW_REQUEST,
+  UNFOLLOW_SUCCESS,
+  UNFOLLOW_FAILURE,
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWERS_SUCCESS,
+  LOAD_FOLLOWERS_FAILURE,
+  LOAD_FOLLOWINGS_REQUEST,
+  LOAD_FOLLOWINGS_SUCCESS,
+  LOAD_FOLLOWINGS_FAILURE,
+  NICKNAME_CHANGE_REQUEST,
+  NICKNAME_CHANGE_SUCCESS,
+  NICKNAME_CHANGE_FAILURE,
+  PASSWORD_CHANGE_REQUEST,
+  PASSWORD_CHANGE_SUCCESS,
+  PASSWORD_CHANGE_FAILURE,
 } from './userAction';
 
 const reducer = (state = initialState, action) =>
@@ -37,8 +55,8 @@ const reducer = (state = initialState, action) =>
       case LOG_IN_FAILURE:
         draft.logInLoading = false;
         draft.loginError = action.error;
-
         break;
+
       // 회원가입
       case SIGN_UP_REQUEST:
         draft.signUpLoading = true;
@@ -52,8 +70,8 @@ const reducer = (state = initialState, action) =>
       case SIGN_UP_FAILURE:
         draft.signUpLoading = false;
         draft.signUpError = action.error;
-
         break;
+
       // 로그아웃
       case LOG_OUT_REQUEST:
         draft.logOutLoading = true;
@@ -100,6 +118,104 @@ const reducer = (state = initialState, action) =>
       case LOAD_USER_FAILURE:
         draft.loadUserLoading = false;
         draft.loadUserError = action.error;
+        break;
+
+      // 팔로워
+      case FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followError = null;
+        draft.followDone = false;
+        break;
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.followDone = true;
+        draft.me.Followings.push({ id: action.data.UserId });
+        break;
+      case FOLLOW_FAILURE:
+        draft.followLoading = false;
+        draft.followError = action.error;
+        break;
+
+      // 언팔로워
+      case UNFOLLOW_REQUEST:
+        draft.unfollowLoading = true;
+        draft.unfollowError = null;
+        draft.unfollowDone = false;
+        break;
+      case UNFOLLOW_SUCCESS:
+        draft.unfollowLoading = false;
+        draft.unfollowDone = true;
+        draft.me.Followings = draft.me.Followings.filter(
+          (v) => v.id !== action.data.UserId,
+        );
+        break;
+      case UNFOLLOW_FAILURE:
+        draft.unfollowLoading = false;
+        draft.unfollowError = action.error;
+        break;
+
+      // 팔로잉 GET
+      case LOAD_FOLLOWINGS_REQUEST:
+        draft.loadFollowingsLoading = true;
+        draft.loadFollowingsError = null;
+        draft.loadFollowingsDone = false;
+        break;
+      case LOAD_FOLLOWINGS_SUCCESS:
+        draft.loadFollowingsLoading = false;
+        draft.loadFollowingsDone = true;
+        draft.me.Followings = action.data;
+        break;
+      case LOAD_FOLLOWINGS_FAILURE:
+        draft.loadFollowingsLoading = false;
+        draft.loadFollowingsError = action.error;
+        break;
+
+      // 팔로워 GET
+      case LOAD_FOLLOWERS_REQUEST:
+        draft.loadFollowersLoading = true;
+        draft.loadFollowersError = null;
+        draft.loadFollowersDone = false;
+        break;
+      case LOAD_FOLLOWERS_SUCCESS:
+        draft.loadFollowersLoading = false;
+        draft.me.Followers = action.data;
+        draft.loadFollowersDone = true;
+        break;
+      case LOAD_FOLLOWERS_FAILURE:
+        draft.loadFollowersLoading = false;
+        draft.loadFollowersError = action.error;
+        break;
+
+      // 닉네임 CHANGE
+      case NICKNAME_CHANGE_REQUEST:
+        draft.nicknameChangeLoading = true;
+        draft.nicknameChangeError = null;
+        draft.nicknameChangeDone = false;
+        break;
+      case NICKNAME_CHANGE_SUCCESS:
+        draft.nicknameChangeLoading = false;
+        draft.me.nickname = action.data.nickname;
+        draft.nicknameChangeDone = true;
+        break;
+      case NICKNAME_CHANGE_FAILURE:
+        draft.nicknameChangeLoading = false;
+        draft.nicknameChangeError = action.error;
+        break;
+
+      // 비밀번호 CHANGE
+      case PASSWORD_CHANGE_REQUEST:
+        draft.passwordChangeLoading = true;
+        draft.passwordChangeError = null;
+        draft.passwordChangeDone = false;
+        break;
+      case PASSWORD_CHANGE_SUCCESS:
+        draft.passwordChangeLoading = false;
+        draft.me.password = action.data.password;
+        draft.passwordChangeDone = true;
+        break;
+      case PASSWORD_CHANGE_FAILURE:
+        draft.passwordChangeLoading = false;
+        draft.passwordChangeError = action.error;
         break;
 
       // me 객체에 포스터 추가
