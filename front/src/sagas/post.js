@@ -8,6 +8,12 @@ import {
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
+  COMMENT_DELETE_FAILURE,
+  COMMENT_DELETE_REQUEST,
+  COMMENT_DELETE_SUCCESS,
+  COMMENT_UPDATE_FAILURE,
+  COMMENT_UPDATE_REQUEST,
+  COMMENT_UPDATE_SUCCESS,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
@@ -289,6 +295,50 @@ function* updatePost(action) {
   }
 }
 
+// 삭제 댓글
+async function commentDeleteAPI(commentId) {
+  const res = await axios.delete(`/post/comment/${commentId}`);
+  return res;
+}
+
+function* commentDelete(action) {
+  try {
+    const result = yield call(commentDeleteAPI, action.data);
+    yield put({
+      type: COMMENT_DELETE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: COMMENT_DELETE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 댓글 수정
+async function commentUpdateAPI(data) {
+  const res = await axios.patch(`/post/comment/${data.commentId}`, data);
+  return res;
+}
+
+function* commentUpdate(action) {
+  try {
+    const result = yield call(commentUpdateAPI, action.data);
+    yield put({
+      type: COMMENT_UPDATE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: COMMENT_UPDATE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -322,6 +372,12 @@ function* watchSearchPosts() {
 function* watchUpdatePost() {
   yield takeLatest(UPDATE_POST_REQUEST, updatePost);
 }
+function* watchCommentDelete() {
+  yield takeLatest(COMMENT_DELETE_REQUEST, commentDelete);
+}
+function* watchCommentUpdate() {
+  yield takeLatest(COMMENT_UPDATE_REQUEST, commentUpdate);
+}
 
 export default function* postSaga() {
   yield all([
@@ -336,5 +392,7 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchSearchPosts),
     fork(watchUpdatePost),
+    fork(watchCommentDelete),
+    fork(watchCommentUpdate),
   ]);
 }

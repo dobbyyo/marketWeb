@@ -47,9 +47,7 @@ async function loginAPI(data) {
 
 function* logIn(action) {
   try {
-    console.log('Login');
     const result = yield call(loginAPI, action.data);
-    console.log(result);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
@@ -80,7 +78,7 @@ function* signUp(action) {
     console.log(err);
     yield put({
       type: SIGN_UP_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }

@@ -129,6 +129,7 @@ export const User = styled(motion.div)`
       cursor: pointer;
       margin-bottom: 1rem;
       height: 3.5rem;
+      width: 100%;
       &:first-child {
         background-color: #ae946d;
         border: none;
@@ -148,9 +149,12 @@ export const User = styled(motion.div)`
         border-bottom: 1px solid #111;
         &:hover {
           color: ${(props) => props.theme.black.row};
-          border: 2px solid #111;
+          border: 1px solid #111;
         }
       }
+    }
+    a {
+      padding: 1rem 6rem;
     }
   }
 `;

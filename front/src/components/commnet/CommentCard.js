@@ -3,20 +3,17 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { useRouter } from 'next/router';
 
-import {
-  ADD_COMMENT_REQUEST,
-  LOAD_POST_REQUEST,
-} from '../../reducers/post/postAction';
+import { ADD_COMMENT_REQUEST } from '../../reducers/post/postAction';
+import CommentContent from '../singlepost/CommentContent';
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
 `;
 const Form = styled.form`
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -27,45 +24,25 @@ const Form = styled.form`
   }
 `;
 
-const CommentUser = styled.div`
-  /* display: flex; */
-  /* border: 1px solid #000; */
-  width: 100%;
-  background-color: ${(props) => props.theme.white.row};
-  border-bottom: 1px solid #000;
-  height: 10rem;
-  overflow: scroll;
-
-  div {
-    /* margin: 1rem 1rem; */
-    padding: 1rem 0.4rem;
-  }
-`;
-
-const CommentCard = ({ post }) => {
+const CommentCard = ({ comments }) => {
   const dispatch = useDispatch();
+  const { addCommentError, singlePost } = useSelector((state) => state.post);
   const id = useSelector((state) => state.user.me?.id);
   const {
     register,
     handleSubmit,
     formState: { errors },
     getValues,
+    reset,
   } = useForm();
-  const router = useRouter();
-  const { postId } = router.query;
-  console.log(postId);
 
   const onSubmitComment = useCallback(() => {
     const { content } = getValues();
-    console.log(content);
     dispatch({
       type: ADD_COMMENT_REQUEST,
-      data: { content, postId: post.id, userId: id },
+      data: { content, postId: singlePost.id, userId: id },
     });
-    dispatch({
-      type: LOAD_POST_REQUEST,
-      data: postId,
-    });
+    reset();
   }, []);
 
   const onError = (error) => {
@@ -74,13 +51,8 @@ const CommentCard = ({ post }) => {
 
   return (
     <Container>
-      {post.Comments &&
-        post.Comments.map((c) => (
-          <CommentUser key={c.id}>
-            <div>작성자: {c.User.nickname}</div>
-            <div>{c.content}</div>
-          </CommentUser>
-        ))}
+      {comments &&
+        comments.map((c) => <CommentContent comment={c} key={c.id} />)}
       <Form onSubmit={handleSubmit(onSubmitComment, onError)}>
         <input
           id="content"
@@ -93,6 +65,10 @@ const CommentCard = ({ post }) => {
         {errors.content && errors.content.type === 'required' && (
           <span style={{ color: 'red' }}>댓글을 작성해주세요</span>
         )}
+
+        {addCommentError && (
+          <span style={{ color: 'red' }}>{addCommentError}</span>
+        )}
         <div>
           <input type="submit" value="확인" />
         </div>
@@ -102,7 +78,7 @@ const CommentCard = ({ post }) => {
 };
 
 CommentCard.propTypes = {
-  post: PropTypes.object.isRequired,
+  comments: PropTypes.array.isRequired,
 };
 
 export default CommentCard;

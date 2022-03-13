@@ -11,7 +11,6 @@ import Card from '../components/card/Card';
 
 const Container = styled.div`
   width: 100%;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,8 +20,9 @@ const CardContainer = styled.div`
   width: 100%;
   display: grid;
   place-items: center;
-  grid-template-columns: repeat(4, minmax(100px, auto));
+  grid-template-columns: repeat(auto-fill, minmax(300px, auto));
   grid-gap: 1rem;
+  margin-top: 2rem;
 `;
 
 const Man = () => {

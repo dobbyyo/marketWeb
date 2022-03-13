@@ -24,7 +24,7 @@ const Box = styled(motion.div)`
   background-color: rgba(0, 0, 0, 0.9);
   width: 100%;
   height: 5rem;
-  /* opacity: 0; */
+  opacity: 0;
   .title {
     display: flex;
     justify-content: center;

@@ -9,8 +9,8 @@ import { SIGN_UP_REQUEST } from '../reducers/user/userAction';
 
 const Signup = () => {
   const dispatch = useDispatch();
-  const { me, signUpDone } = useSelector((state) => state.user);
-  const [passwordError, setPasswordError, signUpError] = useState(false);
+  const { me, signUpDone, signUpError } = useSelector((state) => state.user);
+  const [passwordError, setPasswordError] = useState(false);
   const {
     register,
     handleSubmit,
@@ -29,11 +29,6 @@ const Signup = () => {
       Router.replace('/login');
     }
   });
-  useEffect(() => {
-    if (signUpError) {
-      alert(signUpError);
-    }
-  }, [signUpError]);
 
   const onSubmit = useCallback(() => {
     const { name, email, password, rePassword, nickname } = getValues();
@@ -87,7 +82,6 @@ const Signup = () => {
           {errors.name && errors.name.type === 'required' && (
             <span style={{ color: 'red' }}>필수로 작성해주세요</span>
           )}
-
           <label htmlFor="nickname">별명</label>
           <input
             id="nickname"
@@ -104,7 +98,6 @@ const Signup = () => {
           {errors.nickname && errors.nickname.type === 'required' && (
             <span style={{ color: 'red' }}>필수로 작성해주세요</span>
           )}
-
           <label htmlFor="email">이메일</label>
           <input
             id="email"
@@ -121,7 +114,6 @@ const Signup = () => {
           {errors.email && errors.email.type === 'required' && (
             <span style={{ color: 'red' }}>필수로 작성해주세요</span>
           )}
-
           <label htmlFor="password">비밀번호</label>
           <input
             id="password"
@@ -141,7 +133,6 @@ const Signup = () => {
           {errors.password && errors.password.type === 'minLength' && (
             <span style={{ color: 'red' }}>최소 4글자입니다.</span>
           )}
-
           <label htmlFor="rePassword">비밀번호 확인</label>
           <input
             id="rePassword"
@@ -157,9 +148,9 @@ const Signup = () => {
           {passwordError && (
             <span style={{ color: 'red' }}>비밀번호가 틀렸습니다.</span>
           )}
-
+          {signUpError && <span style={{ color: 'red' }}>{signUpError}</span>}
           <div>
-            <input type="submit" value="로그인" />
+            <input type="submit" value="회원가입" />
           </div>
         </Form>
       </Box>

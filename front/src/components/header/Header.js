@@ -78,7 +78,6 @@ const Header = () => {
             </Item>
             <Item>
               <Link href="/man">
-                {/* {manMatch && <Check layoutId="circle" />} */}
                 <a>남성</a>
               </Link>
             </Item>

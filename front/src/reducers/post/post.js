@@ -6,6 +6,12 @@ import {
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
+  COMMENT_DELETE_FAILURE,
+  COMMENT_DELETE_REQUEST,
+  COMMENT_DELETE_SUCCESS,
+  COMMENT_UPDATE_FAILURE,
+  COMMENT_UPDATE_REQUEST,
+  COMMENT_UPDATE_SUCCESS,
   initialState,
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
@@ -229,6 +235,45 @@ const reducer = (state = initialState, action) =>
       case UPDATE_POST_FAILURE:
         draft.updatePostLoading = false;
         draft.updatePostError = action.error;
+        break;
+
+      // 댓글 삭제
+      case COMMENT_DELETE_REQUEST:
+        draft.commentDeleteLoading = true;
+        draft.commentDeleteDone = false;
+        draft.commentDeleteError = null;
+        break;
+      case COMMENT_DELETE_SUCCESS: {
+        draft.commentDeleteLoading = false;
+        draft.commentDeleteDone = true;
+        const post = draft.singlePost;
+        post.Comments = post.Comments.filter(
+          (v) => v.id !== action.data.commentId,
+        );
+        break;
+      }
+      case COMMENT_DELETE_FAILURE:
+        draft.commentDeleteLoading = false;
+        draft.commentDeleteError = action.error;
+        break;
+
+      // 댓글 수정
+      case COMMENT_UPDATE_REQUEST:
+        draft.commentDeleteLoading = true;
+        draft.commentDeleteDone = false;
+        draft.commentDeleteError = null;
+        break;
+      case COMMENT_UPDATE_SUCCESS: {
+        draft.commentDeleteLoading = false;
+        draft.commentDeleteDone = true;
+        const post = draft.singlePost;
+        post.Comments.find((v) => v.id === action.data.commentId).content =
+          action.data.content;
+        break;
+      }
+      case COMMENT_UPDATE_FAILURE:
+        draft.commentDeleteLoading = false;
+        draft.commentDeleteError = action.error;
         break;
 
       // Form에서 이미지 삭제

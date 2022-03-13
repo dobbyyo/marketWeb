@@ -334,4 +334,46 @@ router.patch("/:postId", isLoggedIn, async (req, res, next) => {
   }
 });
 
+// 댓글 삭제
+router.delete("/comment/:commentId", isLoggedIn, async (req, res, next) => {
+  try {
+    const comment = await Comment.findOne({
+      where: { id: req.params.commentId },
+    });
+    if (!comment) {
+      return res.status(403).send("존재하지 않는 댓글입니다.");
+    }
+    await Comment.destroy({
+      where: { id: req.params.commentId },
+    });
+    res.status(200).json({ commentId: parseInt(req.params.commentId, 10) });
+    // parseInt를 안하면 프론트에서 받을때 스트링으로 받아서 바로 래더링이 안됨.ㅠㅠ 주위!
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 댓글 수정
+router.patch("/comment/:commentId", isLoggedIn, async (req, res, next) => {
+  try {
+    const comment = await Comment.findOne({
+      where: { id: req.params.commentId },
+    });
+    if (!comment) {
+      return res.status(403).send("존재하지 않는 댓글입니다.");
+    }
+    await comment.update({
+      content: req.body.content,
+    });
+    res.status(200).json({
+      commentId: parseInt(req.params.commentId, 10),
+      content: req.body.content,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 module.exports = router;

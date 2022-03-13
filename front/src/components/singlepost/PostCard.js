@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -44,7 +45,7 @@ const PostCard = ({ post }) => {
       type: REMOVE_POST_REQUEST,
       data: post.id,
     });
-    // return Router.push('/');
+    return Router.push('/');
   });
 
   const onClickComment = useCallback(() => {
@@ -90,6 +91,7 @@ const PostCard = ({ post }) => {
     setEdit((cur) => !cur);
   }, [setEdit]);
 
+  // console.log(post);
   return (
     <BoxContainer>
       {edit ? (
@@ -162,7 +164,7 @@ const PostCard = ({ post }) => {
                   </div>
                   <div>성별: {post.people}</div>
                 </div>
-                {commentOpen ? <CommentCard post={post} /> : null}
+                {commentOpen ? <CommentCard comments={post.Comments} /> : null}
               </Info>
             </>
           )}
@@ -174,7 +176,7 @@ const PostCard = ({ post }) => {
 
 PostCard.propTypes = {
   post: PropTypes.shape({
-    Comment: PropTypes.arrayOf(PropTypes.any),
+    Comments: PropTypes.arrayOf(PropTypes.any),
     Images: PropTypes.arrayOf(PropTypes.any),
     User: PropTypes.shape({
       id: PropTypes.number,

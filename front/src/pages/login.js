@@ -10,7 +10,7 @@ import { LOG_IN_REQUEST } from '../reducers/user/userAction';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { me } = useSelector((state) => state.user);
+  const { me, loginError } = useSelector((state) => state.user);
 
   const {
     register,
@@ -90,7 +90,7 @@ const Login = () => {
           {errors.password && errors.password.type === 'required' && (
             <span style={{ color: 'red' }}>필수로 작성해주세요</span>
           )}
-
+          {loginError && <span style={{ color: 'red' }}>{loginError}</span>}
           <div>
             <input type="submit" value="로그인" />
           </div>
