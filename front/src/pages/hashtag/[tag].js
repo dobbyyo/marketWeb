@@ -1,11 +1,10 @@
+import { END } from '@redux-saga/core';
 import axios from 'axios';
 import React from 'react';
 import { useSelector } from 'react-redux';
-
-import { END } from 'redux-saga';
 import styled from 'styled-components';
 import Card from '../../components/card/Card';
-import { SEARCH_POSTS_REQUEST } from '../../reducers/post/postAction';
+import { LOAD_HASHTAG_POSTS_REQUEST } from '../../reducers/post/postAction';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user/userAction';
 import wrapper from '../../store/configureStore';
 
@@ -15,35 +14,24 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 const CardContainer = styled.div`
   width: 100%;
   display: grid;
   place-items: center;
-  grid-template-columns: repeat(4, minmax(100px, auto));
+  grid-template-columns: repeat(auto-fill, minmax(300px, auto));
   grid-gap: 1rem;
-`;
-const Div = styled.div`
-  width: 100%;
-  height: 40rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
+  margin-top: 2rem;
 `;
 
-const Title = () => {
+const Hashtag = () => {
   const { mainPosts } = useSelector((state) => state.post);
 
   return (
     <Container>
-      {mainPosts[0] ? (
-        <CardContainer>
-          {mainPosts &&
-            mainPosts.map((post) => <Card key={post.id} data={post} />)}
-        </CardContainer>
-      ) : (
-        <Div>게시글이 존재하지 않습니다.</Div>
-      )}
+      <CardContainer>
+        {mainPosts && mainPosts.map((v) => <Card data={v} key={v.id} />)}
+      </CardContainer>
     </Container>
   );
 };
@@ -57,15 +45,15 @@ export const getServerSideProps = wrapper.getServerSideProps(
         axios.defaults.headers.Cookie = cookie;
       }
       store.dispatch({
-        type: LOAD_MY_INFO_REQUEST,
+        type: LOAD_HASHTAG_POSTS_REQUEST,
+        data: params.tag,
       });
       store.dispatch({
-        type: SEARCH_POSTS_REQUEST,
-        data: params.title,
+        type: LOAD_MY_INFO_REQUEST,
       });
       store.dispatch(END);
       await store.sagaTask.toPromise();
     },
 );
 
-export default Title;
+export default Hashtag;

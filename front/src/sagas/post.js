@@ -17,6 +17,9 @@ import {
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
@@ -35,6 +38,9 @@ import {
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
+  UPDATE_IMAGES_FAILURE,
+  UPDATE_IMAGES_REQUEST,
+  UPDATE_IMAGES_SUCCESS,
   UPDATE_POST_FAILURE,
   UPDATE_POST_REQUEST,
   UPDATE_POST_SUCCESS,
@@ -112,6 +118,7 @@ function* loadUserPosts(action) {
 
 // 게시글 추가
 async function addPostAPI(data) {
+  console.log(data);
   const res = await axios.post('/post', data);
   //  FormData는 {content: data} 이런식으로 감싸서 보내면 안된다.
   return res;
@@ -119,6 +126,7 @@ async function addPostAPI(data) {
 function* addPost(action) {
   try {
     const result = yield call(addPostAPI, action.data);
+    console.log(result.data);
     yield put({
       type: ADD_POST_SUCCESS,
       data: result.data,
@@ -275,13 +283,14 @@ function* searchPosts(action) {
 
 // 업데이트 포스터
 async function updatePostAPI(data) {
-  const res = await axios.patch(`/post/${data.PostId}`, data);
+  const res = await axios.patch(`/post/${data.PostId}`, data.data);
   return res;
 }
 
 function* updatePost(action) {
   try {
     const result = yield call(updatePostAPI, action.data);
+    console.log(result.data);
     yield put({
       type: UPDATE_POST_SUCCESS,
       data: result.data,
@@ -339,6 +348,50 @@ function* commentUpdate(action) {
   }
 }
 
+// 댓글 수정
+async function imagesUpdateAPI(data) {
+  const res = await axios.patch('/post', data);
+  return res;
+}
+
+function* imagesUpdate(action) {
+  try {
+    const result = yield call(imagesUpdateAPI, action.data);
+    yield put({
+      type: UPDATE_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: UPDATE_IMAGES_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 해스태그 get
+async function loadHashtagAPI(data) {
+  const res = await axios.get(`/hashtag/${encodeURIComponent(data)}`);
+  return res;
+}
+
+function* loadHashtag(action) {
+  try {
+    const result = yield call(loadHashtagAPI, action.data);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: LOAD_HASHTAG_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -378,6 +431,12 @@ function* watchCommentDelete() {
 function* watchCommentUpdate() {
   yield takeLatest(COMMENT_UPDATE_REQUEST, commentUpdate);
 }
+function* watchImageUpdate() {
+  yield takeLatest(UPDATE_IMAGES_REQUEST, imagesUpdate);
+}
+function* watchLoadHashtagPosts() {
+  yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtag);
+}
 
 export default function* postSaga() {
   yield all([
@@ -394,5 +453,7 @@ export default function* postSaga() {
     fork(watchUpdatePost),
     fork(watchCommentDelete),
     fork(watchCommentUpdate),
+    fork(watchImageUpdate),
+    fork(watchLoadHashtagPosts),
   ]);
 }

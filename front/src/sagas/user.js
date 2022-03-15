@@ -1,6 +1,9 @@
 import axios from 'axios';
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import {
+  ADD_USER_IMG_TO_ME_FAILURE,
+  ADD_USER_IMG_TO_ME_REQUEST,
+  ADD_USER_IMG_TO_ME_SUCCESS,
   DELETE_USER_FAILURE,
   DELETE_USER_REQUEST,
   DELETE_USER_SUCCESS,
@@ -37,6 +40,9 @@ import {
   UNFOLLOW_FAILURE,
   UNFOLLOW_REQUEST,
   UNFOLLOW_SUCCESS,
+  USER_IMAGE_FAILURE,
+  USER_IMAGE_REQUEST,
+  USER_IMAGE_SUCCESS,
 } from '../reducers/user/userAction';
 
 // 로그인
@@ -114,7 +120,6 @@ async function loadMyInfoAPI() {
 function* loadMyInfo() {
   try {
     const result = yield call(loadMyInfoAPI);
-    console.log(result);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
@@ -299,6 +304,50 @@ function* deleteUser(action) {
   }
 }
 
+// 이미지 업로드
+async function uploadUserImgAPI(data) {
+  const res = axios.post('/user/image', data);
+  return res;
+}
+
+function* uploadUserImg(action) {
+  try {
+    const result = yield call(uploadUserImgAPI, action.data);
+    yield put({
+      type: USER_IMAGE_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: USER_IMAGE_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// Me에게 이미지 추가
+async function uploadUserImgToMeAPI(data) {
+  const res = axios.post(`/user/${data.userId}/image/`, data);
+  return res;
+}
+
+function* uploadUserImgToMe(action) {
+  try {
+    const result = yield call(uploadUserImgToMeAPI, action.data);
+    yield put({
+      type: ADD_USER_IMG_TO_ME_SUCCESS,
+      data: result.data.src,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: ADD_USER_IMG_TO_ME_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
@@ -336,6 +385,13 @@ function* watchDeleteUser() {
   yield takeLatest(DELETE_USER_REQUEST, deleteUser);
 }
 
+function* watchUserImageUpload() {
+  yield takeLatest(USER_IMAGE_REQUEST, uploadUserImg);
+}
+function* watchUserImageUploadToMe() {
+  yield takeLatest(ADD_USER_IMG_TO_ME_REQUEST, uploadUserImgToMe);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogIn),
@@ -350,5 +406,7 @@ export default function* userSaga() {
     fork(watchNicknameChange),
     fork(watchPasswordChange),
     fork(watchDeleteUser),
+    fork(watchUserImageUpload),
+    fork(watchUserImageUploadToMe),
   ]);
 }

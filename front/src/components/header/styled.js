@@ -82,6 +82,18 @@ export const Input = styled(motion.input)`
   right: 50px;
   color: #fff;
 `;
+export const InputOption = styled(motion.select)`
+  height: 100%;
+  width: 5rem;
+  /* margin-top: 30rem; */
+  position: absolute;
+  left: -6rem;
+  background-color: initial;
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+`;
+
 export const IconContainer = styled(motion.div)`
   margin-left: 3rem;
   font-size: 1.5rem;

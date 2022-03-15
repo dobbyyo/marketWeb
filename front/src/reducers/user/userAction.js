@@ -1,6 +1,7 @@
 export const initialState = {
   me: null,
   userInfo: null,
+  imagePaths: [],
 
   // 로그인
   logInLoading: false,
@@ -59,6 +60,21 @@ export const initialState = {
   deleteUserLoading: false,
   deleteUserDone: false,
   deleteUserError: null,
+
+  // 유저 이미지만 업로드
+  userImageLoading: false,
+  userImageDone: false,
+  userImageError: null,
+
+  // 유저 이미지 업로드
+  addToMeImgLoading: false,
+  addToMeImgDone: false,
+  addToMeImgError: null,
+
+  // 유저 이미지 업로드
+  updateImagesLoading: false,
+  updateImagesDone: false,
+  updateImagesError: null,
 };
 
 // 로그인
@@ -121,6 +137,17 @@ export const DELETE_USER_REQUEST = 'DELETE_USER_REQUEST';
 export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
 export const DELETE_USER_FAILURE = 'DELETE_USER_FAILURE';
 
+// 유저 이미지 업로드
+export const USER_IMAGE_REQUEST = 'USER_IMAGE_REQUEST';
+export const USER_IMAGE_SUCCESS = 'USER_IMAGE_SUCCESS';
+export const USER_IMAGE_FAILURE = 'USER_IMAGE_FAILURE';
+
+// 사용자 아바타 추가
+export const ADD_USER_IMG_TO_ME_REQUEST = 'ADD_USER_IMG_TO_ME_REQUEST';
+export const ADD_USER_IMG_TO_ME_SUCCESS = 'ADD_USER_IMG_TO_ME_SUCCESS';
+export const ADD_USER_IMG_TO_ME_FAILURE = 'ADD_USER_IMG_TO_ME_FAILURE';
+
+export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 // 포스터에서 게시글 추가할때 자기 ID에 추가하는 액션
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
 // 포스터 내 글에서 제거

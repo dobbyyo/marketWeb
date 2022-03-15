@@ -13,6 +13,8 @@ import {
 import Router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
+import Link from 'next/link';
+
 import ImgCard from './ImgCard';
 import noImg from '../../img/noimg.png';
 import {
@@ -54,6 +56,7 @@ const PostCard = ({ post }) => {
 
   const onClickBack = useCallback(() => {
     Router.push('/girl');
+    // 전 라우터 기억하는거 변경!
   });
   const onClickLike = useCallback(() => {
     if (!id) {
@@ -150,7 +153,20 @@ const PostCard = ({ post }) => {
                     </button>
                   )}
                 </div>
-                <div className="main">{post.content}</div>
+                <div className="main">
+                  {post.content.split(/(#[^\s#]+)/g).map((v, i) => {
+                    if (v.match(/(#[^\s#]+)/)) {
+                      return (
+                        <div>
+                          <Link href={`/hashtag/${v.slice(1)}`} key={i}>
+                            <a>{v}</a>
+                          </Link>
+                        </div>
+                      );
+                    }
+                    return <div>{v}</div>;
+                  })}
+                </div>
                 <div className="footer">
                   <div>종류: {post.clothes}</div>
                   <div>

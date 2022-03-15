@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import Router from 'next/router';
 
 import {
+  ADD_USER_IMG_TO_ME_REQUEST,
   DELETE_USER_REQUEST,
   LOG_OUT_REQUEST,
   NICKNAME_CHANGE_REQUEST,
   PASSWORD_CHANGE_REQUEST,
+  REMOVE_IMAGE,
+  USER_IMAGE_REQUEST,
 } from '../../reducers/user/userAction';
 
 const Container = styled.div`
@@ -34,9 +37,8 @@ const UserForm = () => {
   const [newNickname, setNewNickname] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
   const dispatch = useDispatch();
-  const { passwordChangeDone, passwordChangeLoading, me } = useSelector(
-    (state) => state.user,
-  );
+  const { passwordChangeDone, passwordChangeLoading, me, imagePaths } =
+    useSelector((state) => state.user);
 
   const {
     register,
@@ -90,8 +92,85 @@ const UserForm = () => {
     }
   }, [passwordChangeDone]);
 
+  const imageInput = useRef();
+  const onClickImageUpload = useCallback(() => {
+    imageInput.current.click();
+  }, [imageInput.current]);
+
+  const onChangeImages = useCallback((event) => {
+    console.log('images', event.target.files);
+    // 저안에 우리가 선택했던 정보들이 있음.
+    const imageFormData = new FormData();
+    // FormData로 보내야지 멀티파터 형식으로 보낼수있음.
+    //  멀티파어 형식으로 보내야 multer가 처리할 수 있다.
+    [].forEach.call(event.target.files, (f) => {
+      imageFormData.append('image', f);
+    });
+    dispatch({
+      type: USER_IMAGE_REQUEST,
+      data: imageFormData,
+    });
+  }, []);
+
+  const onSubmit = useCallback(() => {
+    const formData = new FormData();
+    imagePaths.forEach((img) => {
+      formData.append('image', img);
+    });
+    return dispatch({
+      type: ADD_USER_IMG_TO_ME_REQUEST,
+      data: formData,
+    });
+  }, [imagePaths]);
+
+  const onRemoveImage = useCallback(
+    () => () => {
+      dispatch({
+        type: REMOVE_IMAGE,
+      });
+    },
+    [],
+  );
   return (
     <Container>
+      <form
+        onSubmit={handleSubmit(onSubmit, onError)}
+        encType="multipart/form-data"
+      >
+        <input
+          type="file"
+          name="image"
+          multiple
+          hidden
+          ref={imageInput}
+          onChange={onChangeImages}
+        />
+        <input
+          type="button"
+          value="이미지 업로드"
+          onClick={onClickImageUpload}
+          accept="image/*"
+        />
+
+        <input type="submit" value="이미지 확인" />
+        <div>
+          {imagePaths[0] ? (
+            <>
+              <img
+                src={`http://localhost:3100/${imagePaths[0]}`}
+                style={{ width: '200px', borderRadius: '50%' }}
+                alt="img"
+              />
+              <div>
+                <button type="button" onClick={onRemoveImage()}>
+                  제거
+                </button>
+              </div>
+            </>
+          ) : null}
+        </div>
+      </form>
+
       <button onClick={onClickNickname} type="button">
         NICKNAME 변경
       </button>

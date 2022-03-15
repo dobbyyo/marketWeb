@@ -1,14 +1,42 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const passport = require("passport");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const { User, Post, Image, Comment } = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("./middlewares");
 
 const router = express.Router();
 
+try {
+  fs.accessSync("uploadUser");
+} catch (error) {
+  console.log("make a uploadUser");
+  fs.mkdirSync("uploadUser");
+}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, done) {
+      done(null, "uploadUser");
+    },
+    filename(req, file, done) {
+      // EX) 강아지.png
+      const extend = path.extname(file.originalname);
+      // 확장자 추출 (.Png)
+      const basename = path.basename(file.originalname, extend);
+      // 강아지
+      done(null, basename + "_" + new Date().getTime() + extend);
+      // 강아지(숫자).png ex) 강아지1212.Png
+    },
+  }),
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB
+});
+
 //  회원가입
-router.post("/signup", async (req, res, next) => {
+router.post("/signup", upload.none(), async (req, res, next) => {
   try {
     const existUser = await User.findOne({
       where: {
@@ -70,6 +98,9 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
             as: "Followers",
             attributes: ["id", "nickname"],
           },
+          {
+            model: Image,
+          },
         ],
       });
       return res.status(200).json(fullUserWithoutPassword);
@@ -100,6 +131,9 @@ router.get("/", async (req, res, next) => {
             model: User,
             as: "Followers",
             attributes: ["id", "nickname"],
+          },
+          {
+            model: Image,
           },
         ],
       });
@@ -135,6 +169,10 @@ router.get("/:userId", async (req, res, next) => {
           model: User,
           as: "Followers",
           attributes: ["id"],
+        },
+        {
+          model: Image,
+          order: [["createdAt", "DESC"]],
         },
       ],
     });
@@ -337,10 +375,57 @@ router.delete("/:userId", isLoggedIn, async (req, res, next) => {
     });
     res.status(200).json("SUCCESS");
   } catch (error) {
-    console.log(req.params.userId);
     console.error(error);
     next(error);
   }
 });
+
+// 유저 이미지 업로드
+router.post(
+  "/image",
+  isLoggedIn,
+  upload.single("image"),
+  async (req, res, next) => {
+    console.log(req.file);
+    res.json(req.file.filename);
+  }
+);
+
+// 유저 이미지 업로드 확인
+router.post(
+  "/:userId/image",
+  isLoggedIn,
+  upload.none(),
+  async (req, res, next) => {
+    try {
+      console.log(req.body.image);
+      const user = await User.findOne({
+        where: { id: req.user.id },
+      });
+      if (!user) {
+        return res.status(403).send("존재하지 않는 유저입니다.");
+      }
+      Image.destroy({
+        where: { UserId: req.user.id },
+      });
+
+      if (req.body.image) {
+        await Image.create({
+          src: req.body.image,
+          UserId: req.user.id,
+        });
+        // await user.addImages(image);
+      }
+      const Img = await Image.findOne({
+        where: { UserId: req.user.id },
+        attributes: ["src"],
+      });
+      res.status(200).send(Img);
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+);
 
 module.exports = router;

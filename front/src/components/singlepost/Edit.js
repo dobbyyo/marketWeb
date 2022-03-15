@@ -1,11 +1,14 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
 
-import { UPDATE_POST_REQUEST } from '../../reducers/post/postAction';
+import {
+  UPDATE_POST_REQUEST,
+  UPLOAD_IMAGES_REQUEST,
+} from '../../reducers/post/postAction';
 
 const Form = styled.form`
   display: flex;
@@ -26,7 +29,9 @@ const Form = styled.form`
 `;
 
 const Edit = ({ post }) => {
+  const { imagePaths } = useSelector((state) => state.post);
   const dispatch = useDispatch();
+  const imageInput = useRef();
   const {
     register,
     handleSubmit,
@@ -44,16 +49,43 @@ const Edit = ({ post }) => {
 
   const onSubmit = useCallback(() => {
     const { title, content, price, clothes, people } = getValues();
+
+    console.log(imagePaths);
+    const formData = new FormData();
+    imagePaths.forEach((img) => {
+      formData.append('image', img);
+    });
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('price', price);
+    formData.append('clothes', clothes);
+    formData.append('people', people);
     dispatch({
       type: UPDATE_POST_REQUEST,
-      data: { title, content, price, clothes, people, PostId: post.id },
+      data: { data: formData, PostId: post.id },
     });
-    Router.replace('/girl');
-  }, [post]);
+    Router.push('/');
+  }, [imagePaths]);
 
   const onError = (error) => {
     console.log(error);
   };
+
+  const onClickImageUpload = useCallback(() => {
+    imageInput.current.click();
+  }, [imageInput.current]);
+
+  const onChangeImages = useCallback((event) => {
+    console.log('images', event.target.files);
+    const imageFormData = new FormData();
+    [].forEach.call(event.target.files, (f) => {
+      imageFormData.append('image', f);
+    });
+    dispatch({
+      type: UPLOAD_IMAGES_REQUEST,
+      data: imageFormData,
+    });
+  }, []);
 
   return (
     <Form
@@ -121,6 +153,38 @@ const Edit = ({ post }) => {
         <option value="여성">여성</option>
         <option value="아동">아동</option>
       </select>
+
+      <input
+        type="file"
+        multiple
+        hidden
+        ref={imageInput}
+        onChange={onChangeImages}
+      />
+      <input
+        type="button"
+        value="이미지 업로드"
+        onClick={onClickImageUpload}
+        accept="image/*"
+      />
+
+      <div>
+        {imagePaths.map((v) => (
+          <div key={v}>
+            <img
+              src={`http://localhost:3100/${v}`}
+              style={{ width: '200px' }}
+              alt="img"
+            />
+            {/* 서버에 Express.static 설정해야함 */}
+            {/* <div>
+              <button type="button" onClick={onRemoveImage(i)}>
+                제거
+              </button>
+            </div> */}
+          </div>
+        ))}
+      </div>
 
       <input className="btn" type="submit" value="확인" />
     </Form>

@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
 import { END } from 'redux-saga';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 // import { useRouter } from 'next/router';
 
 import wrapper from '../../store/configureStore';

@@ -34,7 +34,9 @@ const Post = () => {
   const [barOpen, setBarOpen] = useState(false);
 
   const { mainPosts } = useSelector((state) => state.post);
-  const { userInfo, nicknameChangeDone } = useSelector((state) => state.user);
+  const { userInfo, nicknameChangeDone, addToMeImgDone } = useSelector(
+    (state) => state.user,
+  );
 
   const onClickStore = useCallback(() => {
     setStoreOpen((cur) => !cur);
@@ -51,7 +53,7 @@ const Post = () => {
       type: LOAD_USER_REQUEST,
       data: id,
     });
-  }, [nicknameChangeDone]);
+  }, [nicknameChangeDone, addToMeImgDone]);
 
   return (
     <Container>
@@ -69,7 +71,15 @@ const Post = () => {
           <div className="b">
             {userInfo && (
               <>
-                <div className="icon" />
+                {userInfo.Image ? (
+                  <img
+                    className="icon"
+                    src={`http://localhost:3100/${userInfo.Image.src}`}
+                    alt="img"
+                  />
+                ) : (
+                  <div className="icon" />
+                )}
                 <div className="name">{userInfo.nickname}</div>
                 <div className="id">{userInfo.email}</div>
               </>

@@ -39,6 +39,13 @@ import {
   DELETE_USER_REQUEST,
   DELETE_USER_SUCCESS,
   DELETE_USER_FAILURE,
+  USER_IMAGE_REQUEST,
+  USER_IMAGE_SUCCESS,
+  USER_IMAGE_FAILURE,
+  ADD_USER_IMG_TO_ME_REQUEST,
+  ADD_USER_IMG_TO_ME_SUCCESS,
+  ADD_USER_IMG_TO_ME_FAILURE,
+  REMOVE_IMAGE,
 } from './userAction';
 
 const reducer = (state = initialState, action) =>
@@ -69,6 +76,7 @@ const reducer = (state = initialState, action) =>
       case SIGN_UP_SUCCESS:
         draft.signUpLoading = false;
         draft.signUpDone = true;
+        draft.imagePaths = [];
         break;
       case SIGN_UP_FAILURE:
         draft.signUpLoading = false;
@@ -237,6 +245,38 @@ const reducer = (state = initialState, action) =>
         draft.deleteUserError = action.error;
         break;
 
+      // 유저 이미지업로드
+      case USER_IMAGE_REQUEST:
+        draft.userImageLoading = true;
+        draft.userImageError = null;
+        draft.userImageDone = false;
+        break;
+      case USER_IMAGE_SUCCESS:
+        draft.userImageLoading = false;
+        draft.userImageDone = true;
+        draft.imagePaths = draft.imagePaths.concat(action.data);
+        break;
+      case USER_IMAGE_FAILURE:
+        draft.userImageLoading = false;
+        draft.userImageError = action.error;
+        break;
+
+      case ADD_USER_IMG_TO_ME_REQUEST:
+        draft.addToMeImgLoading = true;
+        draft.addToMeImgError = null;
+        draft.addToMeImgDone = false;
+        break;
+      case ADD_USER_IMG_TO_ME_SUCCESS:
+        draft.addToMeImgLoading = false;
+        draft.addToMeImgDone = true;
+        draft.me.Image = action.data;
+        draft.imagePaths = [];
+        break;
+      case ADD_USER_IMG_TO_ME_FAILURE:
+        draft.addToMeImgLoading = false;
+        draft.addToMeImgError = action.error;
+        break;
+
       // me 객체에 포스터 추가
       case ADD_POST_TO_ME:
         draft.me.Posts.unshift({ id: action.data });
@@ -247,6 +287,12 @@ const reducer = (state = initialState, action) =>
           (data) => data.id !== action.data,
         );
         break;
+
+      // Form에서 이미지 삭제
+      case REMOVE_IMAGE:
+        draft.imagePaths = [];
+        break;
+
       default:
         break;
     }

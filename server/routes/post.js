@@ -2,9 +2,8 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { Op } = require("sequelize");
 
-const { Post, Image, Comment, User } = require("../models");
+const { Post, Image, Comment, User, Hashtag } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 
 const router = express.Router();
@@ -40,6 +39,7 @@ const upload = multer({
 // 게시글 업로드
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
+    const hashtags = req.body.content.match(/#[^\s#]+/g);
     const post = await Post.create({
       title: req.body.title,
       content: req.body.content,
@@ -48,9 +48,21 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
       people: req.body.people,
       UserId: req.user.id,
     });
+
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map((tag) =>
+          Hashtag.findOrCreate({
+            where: { name: tag.slice(1).toLowerCase() },
+          })
+        )
+      );
+      await post.addHashtags(result.map((hashtag) => hashtag[0]));
+    }
+
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
-        // 이미지를 여러 개 올리면 image: [제로초.png, 부기초.png]
+        // 이미지를 여러 개 올리면 image: [강아지.png, 도비.png]
         const images = await Promise.all(
           req.body.image.map((image) => Image.create({ src: image }))
         );
@@ -58,7 +70,7 @@ router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
         // 보통 이미지는 클라우드에 저장하고 주소는 디비에 저장한다.
         await post.addImages(images);
       } else {
-        // 이미지를 하나만 올리면 image: 제로초.png
+        // 이미지를 하나만 올리면 image: 강아지.png
         const image = await Image.create({ src: req.body.image });
         await post.addImages(image);
       }
@@ -303,8 +315,12 @@ router.get("/:search/posts", async (req, res, next) => {
 });
 
 // 포스터 수정
-router.patch("/:postId", isLoggedIn, async (req, res, next) => {
+router.patch("/:PostId", isLoggedIn, upload.none(), async (req, res, next) => {
+  const hashtags = req.body.content.match(/#[^\s#]+/g);
   try {
+    console.log("img" + req.body.image);
+    console.log(req.body.title);
+    console.log(req.params.PostId);
     await Post.update(
       {
         title: req.body.title,
@@ -312,21 +328,46 @@ router.patch("/:postId", isLoggedIn, async (req, res, next) => {
         price: req.body.price,
         clothes: req.body.clothes,
         people: req.body.people,
+        UserId: req.user.id,
       },
       {
         where: {
-          id: req.params.postId,
+          id: req.params.PostId,
           UserId: req.user.id,
         },
       }
     );
+    const post = await Post.findOne({ where: { id: req.params.PostId } });
+
+    if (hashtags) {
+      const result = await Promise.all(
+        hashtags.map((tag) =>
+          Hashtag.findOrCreate({
+            where: { name: tag.slice(1).toLowerCase() },
+          })
+        )
+      );
+      await post.addHashtags(result.map((hashtag) => hashtag[0]));
+    }
+    if (req.body.image) {
+      if (Array.isArray(req.body.image)) {
+        const images = await Promise.all(
+          req.body.image.map((image) => Image.create({ src: image }))
+        );
+        await post.setImages(images);
+      } else {
+        const image = await Image.create({ src: req.body.image });
+        await post.setImages(image);
+      }
+    }
     res.status(200).json({
-      PostId: parseInt(req.params.postId, 10),
       title: req.body.title,
       content: req.body.content,
       price: req.body.price,
       clothes: req.body.clothes,
       people: req.body.people,
+      UserId: req.user.id,
+      image: req.body.image,
     });
   } catch (error) {
     console.error(error);

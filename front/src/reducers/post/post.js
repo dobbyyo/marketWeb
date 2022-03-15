@@ -16,6 +16,9 @@ import {
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
+  LOAD_HASHTAG_POSTS_FAILURE,
+  LOAD_HASHTAG_POSTS_REQUEST,
+  LOAD_HASHTAG_POSTS_SUCCESS,
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
@@ -35,6 +38,9 @@ import {
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
+  UPDATE_IMAGES_FAILURE,
+  UPDATE_IMAGES_REQUEST,
+  UPDATE_IMAGES_SUCCESS,
   UPDATE_POST_FAILURE,
   UPDATE_POST_REQUEST,
   UPDATE_POST_SUCCESS,
@@ -230,6 +236,7 @@ const reducer = (state = initialState, action) =>
         draft.updatePostLoading = false;
         draft.updatePostDone = true;
         draft.singlePost = action.data;
+        draft.singlePost.Images = action.data.Images;
         break;
       }
       case UPDATE_POST_FAILURE:
@@ -274,6 +281,38 @@ const reducer = (state = initialState, action) =>
       case COMMENT_UPDATE_FAILURE:
         draft.commentDeleteLoading = false;
         draft.commentDeleteError = action.error;
+        break;
+
+      // 포스터 이미지 변경
+      case UPDATE_IMAGES_REQUEST:
+        draft.updateImagesLoading = true;
+        draft.updateImagesError = null;
+        draft.updateImagesDone = false;
+        break;
+      case UPDATE_IMAGES_SUCCESS:
+        draft.updateImagesLoading = false;
+        draft.updateImagesDone = true;
+        draft.imagePaths = draft.imagePaths.concat(action.data);
+        break;
+      case UPDATE_IMAGES_FAILURE:
+        draft.updateImagesLoading = false;
+        draft.updateImagesError = action.error;
+        break;
+
+      // 해스태그 GET
+      case LOAD_HASHTAG_POSTS_REQUEST:
+        draft.loadHashtagPostsLoading = true;
+        draft.loadHashtagPostsError = null;
+        draft.loadHashtagPostsDone = false;
+        break;
+      case LOAD_HASHTAG_POSTS_SUCCESS:
+        draft.loadHashtagPostsLoading = false;
+        draft.loadHashtagPostsDone = true;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        break;
+      case LOAD_HASHTAG_POSTS_FAILURE:
+        draft.loadHashtagPostsLoading = false;
+        draft.loadHashtagPostsError = action.error;
         break;
 
       // Form에서 이미지 삭제

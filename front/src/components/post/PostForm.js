@@ -40,7 +40,6 @@ const PostForm = () => {
 
   const onSubmit = useCallback(() => {
     const { title, content, price, clothes, people } = getValues();
-    console.log(clothes);
     if (clothes === 'none') {
       return alert('옷 카테고리를 정해주세요');
     }
@@ -59,6 +58,7 @@ const PostForm = () => {
     // 이미지가 없으면 formData 쓸필요 없다.
     // 하지만 multer를 쓰고 있으므로 사용해봄.
 
+    console.log(formData);
     return dispatch({
       type: ADD_POST_REQUEST,
       data: formData,

@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -23,6 +24,7 @@ import {
   Search,
   IconContainer,
   User,
+  InputOption,
 } from './styled';
 import { LOG_OUT_REQUEST } from '../../reducers/user/userAction';
 
@@ -33,11 +35,15 @@ const Header = () => {
   const { register, handleSubmit, getValues } = useForm();
 
   const onSubmit = useCallback(() => {
-    const { search } = getValues();
-    if (search.length === 0 || search.trim().length === 0) {
-      return alert('검색어를 입력해주세요');
+    const { search, type } = getValues();
+    if (type === '이름') {
+      if (search.length === 0 || search.trim().length === 0) {
+        return alert('검색어를 입력해주세요');
+      }
+      Router.push(`/title/${search}`);
+    } else {
+      return Router.push(`/hashtag/${search}`);
     }
-    return Router.push(`/title/${search}`);
   }, [getValues]);
 
   const onError = (error) => {
@@ -102,6 +108,11 @@ const Header = () => {
               type="text"
               {...register('search')}
             />
+            <InputOption id="type" name="type" {...register('type')}>
+              <option value="이름">이름</option>
+              <option value="해시태그">해시태그</option>
+            </InputOption>
+
             <FontAwesomeIcon className="searchIcon" icon={faSearch} />
           </Search>
           <IconContainer>
