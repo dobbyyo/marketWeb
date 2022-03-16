@@ -2,6 +2,7 @@ export const initialState = {
   mainPosts: [],
   imagePaths: [],
   singlePost: null,
+  savePosts: [],
 
   // 글 업로드
   addPostLoading: false,
@@ -13,17 +14,17 @@ export const initialState = {
   removePostDone: false,
   removePostError: null,
 
-  // 글 불러오기
+  // 글 전체 불러오기
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
 
-  // 글 불러오기
+  // 이미지 업로드
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
 
-  // 특정 유저 게시글 불러오기
+  // 특정 게시글 불러오기
   loadPostLoading: false,
   loadPostDone: false,
   loadPostError: null,
@@ -72,6 +73,21 @@ export const initialState = {
   loadHashtagPostsLoading: false,
   loadHashtagPostsDone: false,
   loadHashtagPostsError: null,
+
+  // 게시글 찜
+  savePostsLoading: false,
+  savePostsDone: false,
+  savePostsError: null,
+
+  // 게시글 찜취소
+  removeSavePostsLoading: false,
+  removeSavePostsDone: false,
+  removeSavePostsError: null,
+
+  // 찜한 게시물 불러오기
+  loadSavePostsLoading: false,
+  loadSavePostsDone: false,
+  loadSavePostsError: null,
 
   // 스크롤 내렸을때 이미지 더 불러오기
   morePosts: true,
@@ -151,6 +167,21 @@ export const UPDATE_IMAGES_FAILURE = 'UPDATE_IMAGES_FAILURE';
 export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST';
 export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS';
 export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE';
+
+// 게시글 찜
+export const SAVE_POSTS_REQUEST = 'SAVE_POSTS_REQUEST';
+export const SAVE_POSTS_SUCCESS = 'SAVE_POSTS_SUCCESS';
+export const SAVE_POSTS_FAILURE = 'SAVE_POSTS_FAILURE';
+
+// 게시글 찜 취소
+export const REMOVE_SAVE_POSTS_REQUEST = 'REMOVE_SAVE_POSTS_REQUEST';
+export const REMOVE_SAVE_POSTS_SUCCESS = 'REMOVE_SAVE_POSTS_SUCCESS';
+export const REMOVE_SAVE_POSTS_FAILURE = 'REMOVE_SAVE_POSTS_FAILURE';
+
+// 게시글 찜 GET
+export const LOAD_SAVE_POSTS_REQUEST = 'LOAD_SAVE_POSTS_REQUEST';
+export const LOAD_SAVE_POSTS_SUCCESS = 'LOAD_SAVE_POSTS_SUCCESS';
+export const LOAD_SAVE_POSTS_FAILURE = 'LOAD_SAVE_POSTS_FAILURE';
 
 export const REMOVE_IMAGE = 'REMOVE_IMAGE';
 // 이미지는 기업에서 잘 안지운다고한다. 나중에 딥러니등 여러가지로 활용할수 있으므로.

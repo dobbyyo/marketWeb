@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faArrowAltCircleLeft,
+  faBan,
   faBars,
+  faCartArrowDown,
   faCommentDots,
   faHeart,
   faHeartCrack,
@@ -20,6 +22,8 @@ import noImg from '../../img/noimg.png';
 import {
   LIKE_POST_REQUEST,
   REMOVE_POST_REQUEST,
+  REMOVE_SAVE_POSTS_REQUEST,
+  SAVE_POSTS_REQUEST,
   UNLIKE_POST_REQUEST,
 } from '../../reducers/post/postAction';
 import CommentCard from '../commnet/CommentCard';
@@ -31,6 +35,7 @@ const PostCard = ({ post }) => {
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.me?.id);
   const [commentOpen, setCommentOpen] = useState(false);
+  const { singlePost } = useSelector((state) => state.post);
 
   useEffect(() => {
     dispatch({
@@ -48,16 +53,17 @@ const PostCard = ({ post }) => {
       data: post.id,
     });
     return Router.push('/');
-  });
+  }, []);
 
   const onClickComment = useCallback(() => {
     setCommentOpen((cur) => !cur);
-  });
+  }, []);
 
   const onClickBack = useCallback(() => {
     Router.push('/girl');
     // 전 라우터 기억하는거 변경!
-  });
+  }, []);
+
   const onClickLike = useCallback(() => {
     if (!id) {
       return alert('로그인이 필요합니다.');
@@ -83,6 +89,10 @@ const PostCard = ({ post }) => {
     liked = post && post.Likers.find((v) => v.id === id);
   }
 
+  let saved;
+  if (post.Saver) {
+    saved = post && post.Saver.find((v) => v.id === id);
+  }
   const [bars, setBars] = useState(false);
   const onClickBars = useCallback(() => {
     setBars((cur) => !cur);
@@ -94,7 +104,25 @@ const PostCard = ({ post }) => {
     setEdit((cur) => !cur);
   }, [setEdit]);
 
-  // console.log(post);
+  const onClickSave = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다');
+    }
+    return dispatch({
+      type: SAVE_POSTS_REQUEST,
+      data: post.id,
+    });
+  }, [id]);
+  const onRemoveClickSave = useCallback(() => {
+    if (!id) {
+      return alert('로그인이 필요합니다');
+    }
+    return dispatch({
+      type: REMOVE_SAVE_POSTS_REQUEST,
+      data: post.id,
+    });
+  }, [id]);
+
   return (
     <BoxContainer>
       {edit ? (
@@ -141,17 +169,37 @@ const PostCard = ({ post }) => {
                 <div className="middle">
                   <div>가격: {post.price}</div>
 
-                  {liked ? (
-                    <button type="button" onClick={onClickUnLike}>
-                      <FontAwesomeIcon icon={faHeartCrack} className="icon" />
-                      싫어요
-                    </button>
-                  ) : (
-                    <button type="button" onClick={onClickLike}>
-                      <FontAwesomeIcon icon={faHeart} className="icon" />
-                      좋아요
-                    </button>
-                  )}
+                  <div>
+                    {id === singlePost.UserId ? null : (
+                      <>
+                        {saved ? (
+                          <button type="button" onClick={onRemoveClickSave}>
+                            <FontAwesomeIcon icon={faBan} className="icon" />찜
+                            삭제
+                          </button>
+                        ) : (
+                          <button type="button" onClick={onClickSave}>
+                            <FontAwesomeIcon
+                              icon={faCartArrowDown}
+                              className="icon"
+                            />
+                            찜
+                          </button>
+                        )}
+                      </>
+                    )}
+                    {liked ? (
+                      <button type="button" onClick={onClickUnLike}>
+                        <FontAwesomeIcon icon={faHeartCrack} className="icon" />
+                        싫어요
+                      </button>
+                    ) : (
+                      <button type="button" onClick={onClickLike}>
+                        <FontAwesomeIcon icon={faHeart} className="icon" />
+                        좋아요
+                      </button>
+                    )}
+                  </div>
                 </div>
                 <div className="main">
                   {post.content.split(/(#[^\s#]+)/g).map((v, i) => {
@@ -206,6 +254,7 @@ PostCard.propTypes = {
     price: PropTypes.string,
     title: PropTypes.string,
     Likers: PropTypes.arrayOf(PropTypes.object),
+    Saver: PropTypes.arrayOf(PropTypes.object),
   }).isRequired,
 };
 

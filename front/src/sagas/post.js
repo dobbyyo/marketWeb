@@ -26,12 +26,21 @@ import {
   LOAD_POST_FAILURE,
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
+  LOAD_SAVE_POSTS_FAILURE,
+  LOAD_SAVE_POSTS_REQUEST,
+  LOAD_SAVE_POSTS_SUCCESS,
   LOAD_USER_POSTS_FAILURE,
   LOAD_USER_POSTS_REQUEST,
   LOAD_USER_POSTS_SUCCESS,
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  REMOVE_SAVE_POSTS_FAILURE,
+  REMOVE_SAVE_POSTS_REQUEST,
+  REMOVE_SAVE_POSTS_SUCCESS,
+  SAVE_POSTS_FAILURE,
+  SAVE_POSTS_REQUEST,
+  SAVE_POSTS_SUCCESS,
   SEARCH_POSTS_FAILURE,
   SEARCH_POSTS_REQUEST,
   SEARCH_POSTS_SUCCESS,
@@ -392,6 +401,72 @@ function* loadHashtag(action) {
   }
 }
 
+// 게시글 찜
+async function savePostsAPI(data) {
+  const res = await axios.patch(`/post/${data}/save`);
+  return res;
+}
+
+function* savePosts(action) {
+  try {
+    const result = yield call(savePostsAPI, action.data);
+    yield put({
+      type: SAVE_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: SAVE_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 게시글 찜 취소
+async function removeSavePostsAPI(data) {
+  const res = await axios.delete(`/post/${data}/save`);
+  return res;
+}
+
+function* removeSavePosts(action) {
+  try {
+    const result = yield call(removeSavePostsAPI, action.data);
+    yield put({
+      type: REMOVE_SAVE_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: REMOVE_SAVE_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+// 찜한 상품 GET
+async function loadSavePostsAPI() {
+  const res = await axios.get('/posts/saved');
+  return res;
+}
+
+function* loadSavePosts(action) {
+  try {
+    const result = yield call(loadSavePostsAPI, action.data);
+    yield put({
+      type: LOAD_SAVE_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: LOAD_SAVE_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLoadPosts() {
   yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
@@ -437,6 +512,15 @@ function* watchImageUpdate() {
 function* watchLoadHashtagPosts() {
   yield takeLatest(LOAD_HASHTAG_POSTS_REQUEST, loadHashtag);
 }
+function* watchSavePosts() {
+  yield takeLatest(SAVE_POSTS_REQUEST, savePosts);
+}
+function* watchRemoveSavePosts() {
+  yield takeLatest(REMOVE_SAVE_POSTS_REQUEST, removeSavePosts);
+}
+function* watchLoadSavePosts() {
+  yield takeLatest(LOAD_SAVE_POSTS_REQUEST, loadSavePosts);
+}
 
 export default function* postSaga() {
   yield all([
@@ -455,5 +539,8 @@ export default function* postSaga() {
     fork(watchCommentUpdate),
     fork(watchImageUpdate),
     fork(watchLoadHashtagPosts),
+    fork(watchSavePosts),
+    fork(watchRemoveSavePosts),
+    fork(watchLoadSavePosts),
   ]);
 }

@@ -25,6 +25,9 @@ import {
   LOAD_POST_FAILURE,
   LOAD_POST_REQUEST,
   LOAD_POST_SUCCESS,
+  LOAD_SAVE_POSTS_FAILURE,
+  LOAD_SAVE_POSTS_REQUEST,
+  LOAD_SAVE_POSTS_SUCCESS,
   LOAD_USER_POSTS_FAILURE,
   LOAD_USER_POSTS_REQUEST,
   LOAD_USER_POSTS_SUCCESS,
@@ -32,6 +35,12 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  REMOVE_SAVE_POSTS_FAILURE,
+  REMOVE_SAVE_POSTS_REQUEST,
+  REMOVE_SAVE_POSTS_SUCCESS,
+  SAVE_POSTS_FAILURE,
+  SAVE_POSTS_REQUEST,
+  SAVE_POSTS_SUCCESS,
   SEARCH_POSTS_FAILURE,
   SEARCH_POSTS_REQUEST,
   SEARCH_POSTS_SUCCESS,
@@ -313,6 +322,59 @@ const reducer = (state = initialState, action) =>
       case LOAD_HASHTAG_POSTS_FAILURE:
         draft.loadHashtagPostsLoading = false;
         draft.loadHashtagPostsError = action.error;
+        break;
+
+      // 게시글 찜
+      case SAVE_POSTS_REQUEST:
+        draft.savePostsLoading = true;
+        draft.savePostsError = null;
+        draft.savePostsDone = false;
+        break;
+      case SAVE_POSTS_SUCCESS: {
+        draft.savePostsLoading = false;
+        draft.savePostsDone = true;
+        const post = draft.singlePost;
+        post.Saver.push({ id: action.data.UserId });
+        break;
+      }
+      case SAVE_POSTS_FAILURE:
+        draft.savePostsLoading = false;
+        draft.savePostsError = action.error;
+        break;
+
+      // 게시글 찜 취소
+      case REMOVE_SAVE_POSTS_REQUEST:
+        draft.removeSavePostsLoading = true;
+        draft.removeSavePostsError = null;
+        draft.removeSavePostsDone = false;
+        break;
+      case REMOVE_SAVE_POSTS_SUCCESS: {
+        draft.removeSavePostsLoading = false;
+        draft.removeSavePostsDone = true;
+        const post = draft.singlePost;
+        post.Saver = post.Saver.filter((v) => v.id !== action.data.UserId);
+        break;
+      }
+      case REMOVE_SAVE_POSTS_FAILURE:
+        draft.removeSavePostsLoading = false;
+        draft.removeSavePostsError = action.error;
+        break;
+
+      // 찜 GET
+      case LOAD_SAVE_POSTS_REQUEST:
+        draft.loadSavePostsLoading = true;
+        draft.loadSavePostsError = null;
+        draft.loadSavePostsDone = false;
+        break;
+      case LOAD_SAVE_POSTS_SUCCESS: {
+        draft.loadSavePostsLoading = false;
+        draft.loadSavePostsDone = true;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        break;
+      }
+      case LOAD_SAVE_POSTS_FAILURE:
+        draft.loadSavePostsLoading = false;
+        draft.loadSavePostsError = action.error;
         break;
 
       // Form에서 이미지 삭제

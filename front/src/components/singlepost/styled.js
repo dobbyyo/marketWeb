@@ -73,6 +73,7 @@ export const Info = styled.div`
     justify-content: space-between;
     align-items: center;
     button {
+      margin-right: 0.2rem;
       width: 5rem;
       height: 2rem;
       background-color: ${(props) => props.theme.red};

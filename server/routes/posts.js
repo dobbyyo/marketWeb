@@ -1,6 +1,7 @@
 const express = require("express");
 const { Op, where } = require("sequelize");
 
+const { isLoggedIn } = require("./middlewares");
 const { Post, Image, User, Comment } = require("../models");
 
 const router = express.Router();
@@ -20,14 +21,69 @@ router.get("/", async (req, res, next) => {
       // offset은 치명적인 단점이 있다. 중간에 삭제하면 어떤 게시글을 안불러올수가 있으므로 사용x
       // 그래서 lastId를 이용한다.
       order: [
-        [
-          ["createdAt", "DESC"],
-          // [Comment, "createdAt", "DESC"],
-        ],
+        ["createdAt", "DESC"],
+        [Comment, "createdAt", "DESC"],
       ],
       include: [
         {
           model: User,
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+        {
+          model: User,
+          as: "Likers",
+          attributes: ["id", "nickname"],
+        },
+      ],
+    });
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 찜한 상품
+router.get("/saved", async (req, res, next) => {
+  try {
+    const saveId = await User.findAll({
+      attributes: ["id"],
+      where: { id: req.user.id },
+      include: [
+        {
+          model: Post,
+          as: "Saved",
+        },
+      ],
+    });
+    const where = {
+      id: { [Op.in]: saveId[0].Saved.map((v) => v.id) },
+    };
+    // if (parseInt(req.query.lastId, 10)) {
+    //   where.id = { [Op.lt]: parseInt(req.query.lastId, 10) };
+    // }
+    const posts = await Post.findAll({
+      where,
+      limit: 10,
+      order: [
+        ["createdAt", "DESC"],
+        [Comment, "createdAt", "DESC"],
+      ],
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nickname", "email"],
         },
         {
           model: Image,

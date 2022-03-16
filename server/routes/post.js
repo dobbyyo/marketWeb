@@ -180,7 +180,7 @@ router.get("/:postId", async (req, res, next) => {
       where: { id: req.params.postId },
     });
     if (!post) {
-      return res.status(404).send("존재하지 않은 게시글입니다.");
+      return res.status(404).send("dd");
     }
     const fullPost = await Post.findOne({
       where: { id: post.id },
@@ -205,6 +205,11 @@ router.get("/:postId", async (req, res, next) => {
           as: "Likers",
           attributes: ["id", "nickname"],
         },
+        {
+          model: User,
+          as: "Saver",
+          attributes: ["id", "nickname"],
+        },
       ],
     });
     res.status(200).json(fullPost);
@@ -219,7 +224,7 @@ router.patch("/:postId/like", isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } });
     if (!post) {
-      return res.status(403).send("게시글이 존재하지 않습니다.");
+      return res.status(403).send("상품이 존재하지 않습니다.");
     }
     await post.addLikers(req.user.id);
     res.json({ PostId: post.id, UserId: req.user.id });
@@ -234,7 +239,7 @@ router.delete("/:postId/like", isLoggedIn, async (req, res, next) => {
   try {
     const post = await Post.findOne({ where: { id: req.params.postId } });
     if (!post) {
-      return res.status(403).send("게시글이 존재하지 않습니다.");
+      return res.status(403).send("상품이 존재하지 않습니다.");
     }
     await post.removeLikers(req.user.id);
     res.json({ PostId: post.id, UserId: req.user.id });
@@ -251,7 +256,7 @@ router.post("/:postId/comment", isLoggedIn, async (req, res, next) => {
       where: { id: req.params.postId },
     });
     if (!post) {
-      return res.status(403).send("존재하지 않는 게시글입니다.");
+      return res.status(403).send("존재하지 않는 상품입니다.");
     }
     const comment = await Comment.create({
       content: req.body.content,
@@ -411,6 +416,46 @@ router.patch("/comment/:commentId", isLoggedIn, async (req, res, next) => {
       commentId: parseInt(req.params.commentId, 10),
       content: req.body.content,
     });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 상품 찜
+router.patch("/:PostId/save", isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.PostId },
+    });
+    if (!post) {
+      return res.status(403).send("존재하지 않는 상품입니다.");
+    }
+    if (req.user.id === post.UserId) {
+      return res.status(403).send("자신의 상품은 찜할수가 없습니다.");
+    }
+    await post.addSaver(req.user.id);
+    res.status(201).json({ PostId: post.id, UserId: req.user.id });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// 상품 찜 취소
+router.delete("/:PostId/save", isLoggedIn, async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.PostId },
+    });
+    if (!post) {
+      return res.status(403).send("존재하지 않는 상품입니다.");
+    }
+    if (req.user.id === post.UserId) {
+      return res.status(403).send("자신의 상품은 찜 취소 불가능합니다.");
+    }
+    await post.removeSaver(req.user.id);
+    res.status(201).json({ PostId: post.id, UserId: req.user.id });
   } catch (error) {
     console.error(error);
     next(error);

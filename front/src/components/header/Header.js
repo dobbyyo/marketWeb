@@ -25,13 +25,13 @@ import {
   IconContainer,
   User,
   InputOption,
+  SmallSearch,
 } from './styled';
 import { LOG_OUT_REQUEST } from '../../reducers/user/userAction';
 
 const Header = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
-
   const { register, handleSubmit, getValues } = useForm();
 
   const onSubmit = useCallback(() => {
@@ -51,10 +51,14 @@ const Header = () => {
   };
 
   const [userOpen, setUserOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const onClickUser = useCallback(() => {
     setUserOpen((pre) => !pre);
   }, [setUserOpen]);
+  const onClickSearch = useCallback(() => {
+    setSearchOpen((pre) => !pre);
+  }, [setSearchOpen]);
 
   const onLogOutClick = useCallback(() => {
     dispatch({
@@ -103,7 +107,7 @@ const Header = () => {
         <Right>
           <Search onSubmit={handleSubmit(onSubmit, onError)}>
             <Input
-              placeholder="검색어를 작성해주세요"
+              placeholder="검색"
               id="search"
               type="text"
               {...register('search')}
@@ -115,16 +119,48 @@ const Header = () => {
 
             <FontAwesomeIcon className="searchIcon" icon={faSearch} />
           </Search>
+
           <IconContainer>
-            <FontAwesomeIcon className="icon" icon={faCartShopping} />
+            <FontAwesomeIcon className="searchRight" icon={faSearch} />
+            {me && (
+              <Link href="/saved">
+                <a>
+                  <FontAwesomeIcon className="icon" icon={faCartShopping} />
+                  {/* 찜아이콘 */}
+                </a>
+              </Link>
+            )}
             <FontAwesomeIcon
               className="icon"
               icon={faUser}
               onClick={onClickUser}
+              style={{ cursor: 'pointer' }}
             />
+            {/* 유저 INFO 아이콘 */}
           </IconContainer>
         </Right>
       </Container>
+
+      <SmallSearch>
+        <form onSubmit={handleSubmit(onSubmit, onError)}>
+          <input
+            placeholder="검색"
+            id="search"
+            type="text"
+            {...register('search')}
+          />
+          <InputOption
+            id="type"
+            name="type"
+            {...register('type')}
+            className="a"
+          >
+            <option value="이름">이름</option>
+            <option value="해시태그">해시태그</option>
+          </InputOption>
+          <FontAwesomeIcon className="searchIcon" icon={faSearch} />
+        </form>
+      </SmallSearch>
 
       {userOpen && (
         <User>

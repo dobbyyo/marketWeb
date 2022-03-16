@@ -221,11 +221,6 @@ router.get("/:userId/posts", async (req, res, next) => {
         {
           model: Image,
         },
-        {
-          model: User,
-          as: "Likers",
-          attributes: ["id", "nickname"],
-        },
       ],
     });
     res.status(200).json(posts);

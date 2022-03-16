@@ -11,26 +11,22 @@ export const Container = styled(motion.div)`
   background-color: ${(props) => props.theme.black.top};
   color: ${(props) => props.theme.white.top};
   z-index: 999;
-  /* position: fixed; */
 `;
 export const Logo = styled(motion.div)`
   width: 10%;
   display: flex;
   align-items: center;
-  /* background-color: red; */
 `;
+
+// 메인
 export const Main = styled(motion.div)`
   width: 45%;
   display: flex;
   align-items: center;
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 `;
-export const Right = styled(motion.div)`
-  width: 45%;
-  display: flex;
-  align-items: center;
-  justify-content: end;
-`;
-
 export const Items = styled.ul`
   width: 100%;
   display: flex;
@@ -44,18 +40,16 @@ export const Item = styled.li`
     color: ${(props) => props.theme.white.row};
   }
 `;
-export const Check = styled(motion.span)`
-  position: absolute;
-  width: 2rem;
-  height: 0.1rem;
-  border-radius: 5px;
-  bottom: -5px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  /* background-color: red; */
-  background-color: ${(props) => props.theme.red};
-  /* z-index: 99999; */
+
+//  검색
+export const Right = styled(motion.div)`
+  width: 45%;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 export const Search = styled.form`
@@ -71,12 +65,13 @@ export const Search = styled.form`
     left: 5px;
     font-size: 1.5rem;
   }
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 `;
 export const Input = styled(motion.input)`
   height: 80%;
   border: none;
-  /* width: 15rem; */
-  /* background-color: ${(props) => props.theme.black.row}; */
   background-color: initial;
   position: absolute;
   right: 50px;
@@ -85,7 +80,6 @@ export const Input = styled(motion.input)`
 export const InputOption = styled(motion.select)`
   height: 100%;
   width: 5rem;
-  /* margin-top: 30rem; */
   position: absolute;
   left: -6rem;
   background-color: initial;
@@ -97,10 +91,17 @@ export const InputOption = styled(motion.select)`
 export const IconContainer = styled(motion.div)`
   margin-left: 3rem;
   font-size: 1.5rem;
-  /* background-color: red; */
   display: flex;
-  .icon {
-    margin-right: 2rem;
+  a {
+    margin: 0 2rem;
+  }
+  .searchRight {
+    display: none;
+  }
+  @media screen and (max-width: 768px) {
+    .searchRight {
+      display: flex;
+    }
   }
 `;
 
@@ -168,6 +169,42 @@ export const User = styled(motion.div)`
     a {
       padding: 1rem 6rem;
     }
+  }
+`;
+export const SmallSearch = styled.div`
+  /* display: flex; */
+  background-color: ${(props) => props.theme.white.top};
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  /* justify-content: center; */
+  form {
+    width: 100%;
+    height: 7rem;
+    background-color: ${(props) => props.theme.white.row};
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  input {
+    width: 80%;
+    height: 3.2rem;
+    background-color: red;
+  }
+  .a {
+    background-color: blue;
+    width: 10%;
+    height: 3rem;
+    position: absolute;
+    left: 0rem;
+    right: 0;
+  }
+  .searchIcon {
+    position: absolute;
+    left: 12%;
+    font-size: 1.5rem;
   }
 `;
 
