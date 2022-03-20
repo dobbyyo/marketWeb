@@ -150,10 +150,10 @@ const PostForm = () => {
           <label htmlFor="people">용도</label>
           <select id="people" name="people" {...register('people')}>
             <option value="none">선택하세요</option>
-            <option value="공동">공동</option>
-            <option value="남성">남성</option>
-            <option value="여성">여성</option>
-            <option value="아동">아동</option>
+            <option value="all">공동</option>
+            <option value="man">남성</option>
+            <option value="girl">여성</option>
+            <option value="child">아동</option>
           </select>
 
           <input

@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  faBars,
   faCartShopping,
   faInfinity,
   faSearch,
@@ -10,7 +11,7 @@ import {
   faX,
 } from '@fortawesome/free-solid-svg-icons';
 import { useForm } from 'react-hook-form';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -26,6 +27,9 @@ import {
   User,
   InputOption,
   SmallSearch,
+  Menu,
+  SmallItems,
+  SmallItem,
 } from './styled';
 import { LOG_OUT_REQUEST } from '../../reducers/user/userAction';
 
@@ -33,6 +37,8 @@ const Header = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state) => state.user);
   const { register, handleSubmit, getValues } = useForm();
+  const router = useRouter();
+  const { category } = router.query;
 
   const onSubmit = useCallback(() => {
     const { search, type } = getValues();
@@ -46,18 +52,31 @@ const Header = () => {
     }
   }, [getValues]);
 
+  const onLink = useCallback(
+    (id) => () => {
+      if (id !== category) {
+        Router.push(`/category/${id}`);
+      }
+    },
+    [category],
+  );
+
   const onError = (error) => {
     console.log(error);
   };
 
   const [userOpen, setUserOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const onClickUser = useCallback(() => {
     setUserOpen((pre) => !pre);
   }, [setUserOpen]);
   const onClickSearch = useCallback(() => {
     setSearchOpen((pre) => !pre);
+  }, [setSearchOpen]);
+  const onClickMenu = useCallback(() => {
+    setMenuOpen((pre) => !pre);
   }, [setSearchOpen]);
 
   const onLogOutClick = useCallback(() => {
@@ -77,29 +96,34 @@ const Header = () => {
               <FontAwesomeIcon icon={faInfinity} />
             </a>
           </Link>
+          <button type="button" onClick={onClickMenu}>
+            <FontAwesomeIcon icon={faBars} className="menuIcon" />
+          </button>
         </Logo>
 
         <Main>
           <Items>
             <Item>
-              <Link href="/girl">
-                <a>여성</a>
-              </Link>
+              <div role="button" onClick={onLink('girl')}>
+                {/* onKeyUp eslint 오류 블로그에 설명  */}
+                {/* tabIndex 블로그 설명 */}
+                여성
+              </div>
             </Item>
             <Item>
-              <Link href="/man">
-                <a>남성</a>
-              </Link>
+              <div role="button" onClick={onLink('man')}>
+                남자
+              </div>
             </Item>
             <Item>
-              <Link href="/child">
-                <a>아동</a>
-              </Link>
+              <div role="button" onClick={onLink('child')}>
+                유아
+              </div>
             </Item>
             <Item>
-              <Link href="/all">
-                <a>공용</a>
-              </Link>
+              <div role="button" onClick={onLink('all')}>
+                공용
+              </div>
             </Item>
           </Items>
         </Main>
@@ -121,7 +145,11 @@ const Header = () => {
           </Search>
 
           <IconContainer>
-            <FontAwesomeIcon className="searchRight" icon={faSearch} />
+            <FontAwesomeIcon
+              className="searchRight"
+              icon={faSearch}
+              onClick={onClickSearch}
+            />
             {me && (
               <Link href="/saved">
                 <a>
@@ -141,26 +169,67 @@ const Header = () => {
         </Right>
       </Container>
 
-      <SmallSearch>
-        <form onSubmit={handleSubmit(onSubmit, onError)}>
-          <input
-            placeholder="검색"
-            id="search"
-            type="text"
-            {...register('search')}
+      {menuOpen && (
+        <Menu>
+          <FontAwesomeIcon
+            icon={faX}
+            className="backIcon"
+            onClick={onClickMenu}
           />
-          <InputOption
-            id="type"
-            name="type"
-            {...register('type')}
-            className="a"
-          >
-            <option value="이름">이름</option>
-            <option value="해시태그">해시태그</option>
-          </InputOption>
-          <FontAwesomeIcon className="searchIcon" icon={faSearch} />
-        </form>
-      </SmallSearch>
+          <SmallItems>
+            <SmallItem>
+              <div role="button" onClick={onLink('girl')}>
+                여성
+              </div>
+            </SmallItem>
+            <SmallItem>
+              <div role="button" onClick={onLink('man')}>
+                남자
+              </div>
+            </SmallItem>
+            <SmallItem>
+              <div role="button" onClick={onLink('child')}>
+                유아
+              </div>
+            </SmallItem>
+            <SmallItem>
+              <div role="button" onClick={onLink('all')}>
+                공용
+              </div>
+            </SmallItem>
+          </SmallItems>
+        </Menu>
+      )}
+
+      {searchOpen && (
+        <SmallSearch>
+          <div>
+            <FontAwesomeIcon
+              icon={faX}
+              className="cancelIcon"
+              onClick={onClickSearch}
+            />
+            <form onSubmit={handleSubmit(onSubmit, onError)}>
+              <input
+                placeholder="검색"
+                id="search"
+                type="text"
+                {...register('search')}
+              />
+              <InputOption
+                id="type"
+                name="type"
+                {...register('type')}
+                className="option"
+              >
+                <option value="이름">이름</option>
+                <option value="해시태그">해시태그</option>
+              </InputOption>
+              <FontAwesomeIcon className="searchIcon" icon={faSearch} />
+            </form>
+          </div>
+        </SmallSearch>
+      )}
 
       {userOpen && (
         <User>

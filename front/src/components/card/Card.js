@@ -39,11 +39,12 @@ const Box = styled(motion.div)`
   }
 `;
 const CardContainer = styled(motion.div)`
-  width: 20rem;
-  height: 20rem;
+  width: 29rem;
+  height: 29rem;
   margin: 2px;
   color: #fff;
   position: relative;
+  background-color: black;
   &:hover {
     ${Box} {
       opacity: 1;

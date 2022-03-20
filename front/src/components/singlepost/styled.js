@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const BoxContainer = styled.div`
-  width: 50%;
+  width: 80%;
   background-color: ${(props) => props.theme.white.top};
   color: ${(props) => props.theme.black.top};
   border-radius: 2rem;
@@ -9,6 +9,10 @@ export const BoxContainer = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  margin-top: 5rem;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 `;
 export const Header = styled.div`
   width: 100%;
@@ -54,6 +58,7 @@ export const Info = styled.div`
     border-top: 2px solid #000;
     padding: 1rem 0;
     align-items: center;
+
     .commentBtn {
       width: 5rem;
       height: 2rem;
@@ -91,10 +96,13 @@ export const Info = styled.div`
 `;
 
 export const Img = styled.img`
-  width: 90%;
-  height: 20rem;
+  width: 50%;
+  height: 30rem;
   border-radius: 1rem;
   margin-top: 1rem;
+  @media screen and (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 export const Option = styled.div`

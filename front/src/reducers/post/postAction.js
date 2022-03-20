@@ -3,6 +3,7 @@ export const initialState = {
   imagePaths: [],
   singlePost: null,
   savePosts: [],
+  postLength: null,
 
   // 글 업로드
   addPostLoading: false,
@@ -18,6 +19,16 @@ export const initialState = {
   loadPostsLoading: false,
   loadPostsDone: false,
   loadPostsError: null,
+
+  // 특정 카테고리  상품 전체 불러오기
+  loadCategoryPostsLoading: false,
+  loadCategoryPostsDone: false,
+  loadCategoryPostsError: null,
+
+  // 특정 카테고리  상품 전체 객수 불러오기
+  // loadCategoryLengthLoading: false,
+  // loadCategoryLengthDone: false,
+  // loadCategoryLengthError: null,
 
   // 이미지 업로드
   uploadImagesLoading: false,
@@ -107,6 +118,16 @@ export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST';
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS';
 export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE';
+
+// 특정 카테고리 포스터 가져오기
+export const LOAD_CATEGORY_POSTS_REQUEST = 'LOAD_CATEGORY_POSTS_REQUEST';
+export const LOAD_CATEGORY_POSTS_SUCCESS = 'LOAD_CATEGORY_POSTS_SUCCESS';
+export const LOAD_CATEGORY_POSTS_FAILURE = 'LOAD_CATEGORY_POSTS_FAILURE';
+
+// 특정 카테고리 포스터 가져오기
+export const LOAD_CATEGORY_LENGTH_REQUEST = 'LOAD_CATEGORY_LENGTH_REQUEST';
+export const LOAD_CATEGORY_LENGTH_SUCCESS = 'LOAD_CATEGORY_LENGTH_SUCCESS';
+export const LOAD_CATEGORY_LENGTH_FAILURE = 'LOAD_CATEGORY_LENGTH_FAILURE';
 
 // 이미지 업로드
 export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST';

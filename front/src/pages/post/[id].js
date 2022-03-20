@@ -3,7 +3,6 @@ import axios from 'axios';
 import { END } from 'redux-saga';
 import styled from 'styled-components';
 import { useSelector } from 'react-redux';
-// import { useRouter } from 'next/router';
 
 import wrapper from '../../store/configureStore';
 import { LOAD_MY_INFO_REQUEST } from '../../reducers/user/userAction';
@@ -11,12 +10,10 @@ import { LOAD_POST_REQUEST } from '../../reducers/post/postAction';
 import PostCard from '../../components/singlepost/PostCard';
 
 const Container = styled.div`
-  margin-top: 2rem;
   width: 100%;
-  /* height: 100vh; */
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 `;
 
 const Post = () => {

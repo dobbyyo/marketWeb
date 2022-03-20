@@ -60,8 +60,7 @@ const PostCard = ({ post }) => {
   }, []);
 
   const onClickBack = useCallback(() => {
-    Router.push('/girl');
-    // 전 라우터 기억하는거 변경!
+    Router.back();
   }, []);
 
   const onClickLike = useCallback(() => {
@@ -145,7 +144,11 @@ const PostCard = ({ post }) => {
                 </div>
                 {id && post.User.id === id && (
                   <div className="header__right">
-                    <FontAwesomeIcon icon={faBars} onClick={onClickBars} />
+                    <FontAwesomeIcon
+                      icon={faBars}
+                      onClick={onClickBars}
+                      style={{ cursor: 'pointer' }}
+                    />
                     {bars && (
                       <Option>
                         <FontAwesomeIcon icon={faXmark} onClick={onClickBars} />

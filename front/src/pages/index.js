@@ -1,47 +1,20 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Slider from 'react-slick';
+import React, { useCallback } from 'react';
 import { END } from 'redux-saga';
 import axios from 'axios';
+import Router from 'next/router';
 
-import {
-  Bottom,
-  Box,
-  Btn,
-  Container,
-  Header,
-  ManMain,
-  GirlMain,
-} from '../components/home/styled';
-import PostCard from '../components/post/PostCard';
+import { Bottom, Box, Btn, Container, Header } from '../components/home/styled';
 import { LOAD_POSTS_REQUEST } from '../reducers/post/postAction';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user/userAction';
 import wrapper from '../store/configureStore';
 
 const Home = () => {
-  const { mainPosts } = useSelector((state) => state.post);
-  const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch({
-  //     type: LOAD_MY_INFO_REQUEST,
-  //   });
-  //   if (mainPosts.length < 1) {
-  //     dispatch({
-  //       type: LOAD_POSTS_REQUEST,
-  //     });
-  //   }
-  // }, []);
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 3,
-  };
+  const onClickMan = useCallback(() => {
+    Router.push('/man');
+  }, []);
+  const onClickGirl = useCallback(() => {
+    Router.push('/girl');
+  }, []);
 
   return (
     <Container>
@@ -55,17 +28,10 @@ const Home = () => {
             </p>
           </div>
         </Box>
-        <ManMain>
-          {/* <Slider {...settings}>
-            {mainPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </Slider> */}
-        </ManMain>
+        <Btn className="manBtn" onClick={onClickMan}>
+          <button type="button">상품 보러가기</button>
+        </Btn>
       </Header>
-      <Btn>
-        <button type="button">상품 보러가기</button>
-      </Btn>
 
       <Bottom>
         <Box>
@@ -77,17 +43,12 @@ const Home = () => {
             </p>
           </div>
         </Box>
-        <GirlMain>
-          {/* <Slider {...settings}>
-            {mainPosts.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </Slider> */}
-        </GirlMain>
+        <Btn onClick={onClickGirl}>
+          <button type="button" className="girlBtn">
+            상품 보러가기
+          </button>
+        </Btn>
       </Bottom>
-      <Btn>
-        <button type="button">상품 보러가기</button>
-      </Btn>
     </Container>
   );
 };

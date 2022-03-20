@@ -17,6 +17,12 @@ import {
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
+  LOAD_CATEGORY_LENGTH_FAILURE,
+  LOAD_CATEGORY_LENGTH_REQUEST,
+  LOAD_CATEGORY_LENGTH_SUCCESS,
+  LOAD_CATEGORY_POSTS_FAILURE,
+  LOAD_CATEGORY_POSTS_REQUEST,
+  LOAD_CATEGORY_POSTS_SUCCESS,
   LOAD_HASHTAG_POSTS_FAILURE,
   LOAD_HASHTAG_POSTS_REQUEST,
   LOAD_HASHTAG_POSTS_SUCCESS,
@@ -80,6 +86,52 @@ function* loadPosts(action) {
     });
   }
 }
+
+// 특정 카테고리 포스터 전체 불러오기
+async function loadCategoryPostsAPI(data, lastId) {
+  const res = await axios.get(`/posts/${data}/all?lastId=${lastId || 0}`);
+  return res;
+}
+
+function* loadCategoryPosts(action) {
+  try {
+    const result = yield call(loadCategoryPostsAPI, action.data, action.lastId);
+    console.log(result.data);
+    yield put({
+      type: LOAD_CATEGORY_POSTS_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.log(err);
+    yield put({
+      type: LOAD_CATEGORY_POSTS_FAILURE,
+      data: err.response.data,
+    });
+  }
+}
+
+// 특정 카테고리 포스터 전체 갯수 불러오기
+// async function loadCategoryLengthAPI(category) {
+//   const res = await axios.get(`/posts/${category}/length`);
+//   return res;
+// }
+
+// function* loadCategoryLength(action) {
+//   try {
+//     const result = yield call(loadCategoryLengthAPI, action.data);
+//     console.log(result.data);
+//     yield put({
+//       type: LOAD_CATEGORY_LENGTH_SUCCESS,
+//       data: result.data,
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     yield put({
+//       type: LOAD_CATEGORY_LENGTH_FAILURE,
+//       data: err.response.data,
+//     });
+//   }
+// }
 
 // 특정 게시글 불러오기
 async function loadPostAPI(postId) {
@@ -521,10 +573,17 @@ function* watchRemoveSavePosts() {
 function* watchLoadSavePosts() {
   yield takeLatest(LOAD_SAVE_POSTS_REQUEST, loadSavePosts);
 }
+function* watchCategoryLoadSavePosts() {
+  yield takeLatest(LOAD_CATEGORY_POSTS_REQUEST, loadCategoryPosts);
+}
+// function* watchCategoryLoadLengthPosts() {
+//   yield takeLatest(LOAD_CATEGORY_LENGTH_REQUEST, loadCategoryLength);
+// }
 
 export default function* postSaga() {
   yield all([
     fork(watchLoadPosts),
+    fork(watchCategoryLoadSavePosts),
     fork(watchAddPost),
     fork(watchRemovePost),
     fork(watchUploadImages),
@@ -542,5 +601,6 @@ export default function* postSaga() {
     fork(watchSavePosts),
     fork(watchRemoveSavePosts),
     fork(watchLoadSavePosts),
+    // fork(watchCategoryLoadLengthPosts),
   ]);
 }

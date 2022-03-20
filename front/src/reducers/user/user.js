@@ -46,6 +46,12 @@ import {
   ADD_USER_IMG_TO_ME_SUCCESS,
   ADD_USER_IMG_TO_ME_FAILURE,
   REMOVE_IMAGE,
+  LOAD_FOLLOWERS_USER_REQUEST,
+  LOAD_FOLLOWERS_USER_FAILURE,
+  LOAD_FOLLOWERS_USER_SUCCESS,
+  LOAD_FOLLOWINGS_USER_FAILURE,
+  LOAD_FOLLOWINGS_USER_SUCCESS,
+  LOAD_FOLLOWINGS_USER_REQUEST,
 } from './userAction';
 
 const reducer = (state = initialState, action) =>
@@ -195,6 +201,38 @@ const reducer = (state = initialState, action) =>
       case LOAD_FOLLOWERS_FAILURE:
         draft.loadFollowersLoading = false;
         draft.loadFollowersError = action.error;
+        break;
+
+      // 팔로잉 유저 GET
+      case LOAD_FOLLOWINGS_USER_REQUEST:
+        draft.loadFollowingsUserLoading = true;
+        draft.loadFollowingsUserError = null;
+        draft.loadFollowingsUserDone = false;
+        break;
+      case LOAD_FOLLOWINGS_USER_SUCCESS:
+        draft.loadFollowingsUserLoading = false;
+        draft.loadFollowingsUserDone = true;
+        draft.followings = action.data;
+        break;
+      case LOAD_FOLLOWINGS_USER_FAILURE:
+        draft.loadFollowingsUserLoading = false;
+        draft.loadFollowingsUserError = action.error;
+        break;
+
+      // 팔로워 유저 GET
+      case LOAD_FOLLOWERS_USER_REQUEST:
+        draft.loadFollowersUserLoading = true;
+        draft.loadFollowersUserError = null;
+        draft.loadFollowersUserDone = false;
+        break;
+      case LOAD_FOLLOWERS_USER_SUCCESS:
+        draft.loadFollowersUserLoading = false;
+        draft.followers = action.data;
+        draft.loadFollowersUserDone = true;
+        break;
+      case LOAD_FOLLOWERS_USER_FAILURE:
+        draft.loadFollowersUserLoading = false;
+        draft.loadFollowersUserError = action.error;
         break;
 
       // 닉네임 CHANGE

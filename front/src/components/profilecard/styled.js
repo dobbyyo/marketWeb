@@ -14,6 +14,9 @@ export const Box = styled.div`
   /* height: 80%; */
   background-color: #fff;
   padding: 2rem;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 export const Header = styled.div`
@@ -26,7 +29,7 @@ export const Header = styled.div`
     justify-content: space-between;
     align-items: center;
   }
-  .b {
+  .userInfo {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -36,12 +39,15 @@ export const Header = styled.div`
       margin-bottom: 0.6rem;
     }
   }
-  .icon {
+  .avatar {
     margin-top: 1.2rem;
     width: 10rem;
     height: 10rem;
     background-color: #111;
     border-radius: 10rem;
+  }
+  .icon {
+    cursor: pointer;
   }
 `;
 
@@ -65,22 +71,30 @@ export const Option = styled.div`
 export const Main = styled.div`
   width: 100%;
   height: 30%;
-  /* background-color: red; */
-  .userInfo {
-    margin-top: 1rem;
-    font-size: 1.2rem;
+  border-bottom: 1px solid #000;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  .infoName {
     display: flex;
-    flex-direction: column;
-    /* justify-content: space-around; */
-    .infoName {
-      display: flex;
-      justify-content: space-around;
+    justify-content: space-around;
+    button {
+      border: none;
+      height: 2rem;
+      width: 5rem;
+      background-color: #000;
+      color: #fff;
+      &:hover {
+        opacity: 0.7;
+      }
     }
-    .infoValue {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: space-around;
-    }
+  }
+  .infoValue {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
   }
   .btn {
     display: flex;
@@ -117,4 +131,15 @@ export const Footer = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 2rem 0rem;
+`;
+
+export const Name = styled.div`
+  /* background-color: red; */
+  width: 10rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #000;
+  cursor: pointer;
 `;

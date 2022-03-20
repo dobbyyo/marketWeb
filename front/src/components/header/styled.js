@@ -11,16 +11,30 @@ export const Container = styled(motion.div)`
   background-color: ${(props) => props.theme.black.top};
   color: ${(props) => props.theme.white.top};
   z-index: 999;
+  position: fixed;
 `;
 export const Logo = styled(motion.div)`
-  width: 10%;
+  width: 20%;
   display: flex;
   align-items: center;
+  font-size: 1.4rem;
+  a {
+    margin-right: 1rem;
+  }
+  button {
+    background-color: initial;
+    border: none;
+    font-size: 1.4rem;
+  }
+  .menuIcon {
+    cursor: pointer;
+    background-color: #fff;
+  }
 `;
 
 // 메인
 export const Main = styled(motion.div)`
-  width: 45%;
+  width: 40%;
   display: flex;
   align-items: center;
   @media screen and (max-width: 768px) {
@@ -43,7 +57,7 @@ export const Item = styled.li`
 
 //  검색
 export const Right = styled(motion.div)`
-  width: 45%;
+  width: 40%;
   display: flex;
   align-items: center;
   justify-content: end;
@@ -86,6 +100,16 @@ export const InputOption = styled(motion.select)`
   color: #fff;
   border: none;
   font-size: 1rem;
+  text-align: center;
+  @media screen and (max-width: 768px) {
+    color: #000;
+    position: absolute;
+    left: 85%;
+    appearance: none; /* 화살표 없애기 공통*/
+    /* border: 1px solid #000; */
+    width: 3.8rem;
+    text-align: center;
+  }
 `;
 
 export const IconContainer = styled(motion.div)`
@@ -97,10 +121,12 @@ export const IconContainer = styled(motion.div)`
   }
   .searchRight {
     display: none;
+    cursor: pointer;
   }
   @media screen and (max-width: 768px) {
     .searchRight {
       display: flex;
+      margin-right: 2rem;
     }
   }
 `;
@@ -172,95 +198,78 @@ export const User = styled(motion.div)`
   }
 `;
 export const SmallSearch = styled.div`
-  /* display: flex; */
   background-color: ${(props) => props.theme.white.top};
   height: 100%;
   width: 100%;
   position: fixed;
-  z-index: 1;
-  /* justify-content: center; */
-  form {
+  z-index: 999;
+
+  div {
     width: 100%;
-    height: 7rem;
+    height: 10rem;
     background-color: ${(props) => props.theme.white.row};
-    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  form {
+    width: 80%;
+    /* background-color: red; */
+    height: 3.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: ${(props) => props.theme.white.top};
+    position: relative;
+    border: 3px solid #f2f2f2;
   }
   input {
     width: 80%;
     height: 3.2rem;
-    background-color: red;
-  }
-  .a {
-    background-color: blue;
-    width: 10%;
-    height: 3rem;
-    position: absolute;
-    left: 0rem;
-    right: 0;
+    border: none;
   }
   .searchIcon {
+    cursor: pointer;
     position: absolute;
-    left: 12%;
+    left: 1rem;
+    font-size: 1.5rem;
+  }
+  .cancelIcon {
+    cursor: pointer;
+    position: relative;
+    top: -3rem;
+    left: -2rem;
     font-size: 1.5rem;
   }
 `;
 
-// export const Menu = styled.div`
-//   width: 30%;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   ul {
-//     display: flex;
-//     li {
-//       padding: 0 0.5rem;
-//     }
-//     .uploadItem {
-//       background-color: black;
-//       border-radius: 5rem;
-//       color: #fff;
-//       /* padding: 1rem 0; */
-//       cursor: pointer;
-//     }
-//   }
-//   @media screen and (max-width: 768px) {
-//     flex-wrap: wrap;
-//     display: ${(props) => (props.isToggled ? 'flex' : 'none')};
-//   }
-// `;
-
-// export const User = styled.div`
-//   width: 30%;
-//   /* height: 100%; */
-//   display: flex;
-//   justify-content: right;
-//   /* text-align: center; */
-//   align-items: center;
-
-//   div {
-//     padding: 0 0.5rem;
-//     &:last-child {
-//       display: flex;
-//       align-items: center;
-//       border-radius: 4rem;
-//       color: #fff;
-//       background-color: #111;
-//       height: 3rem;
-//     }
-//   }
-//   @media screen and (max-width: 768px) {
-//     flex-wrap: wrap;
-//     display: ${(props) => (props.isToggled ? 'flex' : 'none')};
-//   }
-// `;
-
-// export const Toggled = styled.div`
-//   /* color: white; */
-//   cursor: pointer;
-//   @media screen and (min-width: 768px) {
-//     display: ${(props) => (props.isToggled ? 'flex' : 'none')};
-//   }
-// `;
+export const Menu = styled.div`
+  position: fixed;
+  z-index: 999;
+  width: 15rem;
+  height: 15rem;
+  background-color: ${(props) => props.theme.white.top};
+  .backIcon {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+`;
+export const SmallItems = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+`;
+export const SmallItem = styled.div`
+  width: 100%;
+  text-align: center;
+  a {
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+`;

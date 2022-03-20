@@ -6,16 +6,29 @@ import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router';
 
 import {
+  REMOVE_IMAGE,
   UPDATE_POST_REQUEST,
   UPLOAD_IMAGES_REQUEST,
 } from '../../reducers/post/postAction';
+// import { Form } from '../login/styled';
 
 const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  label {
+  display: grid;
+  gap: 0.875rem;
+  width: 100%;
+  padding: 1.5rem 2rem;
+  /* justify-content: center; */
+  /* background-color: blue; */
+  /* label {
     padding: 0.7rem 0;
+  } */
+  input,
+  select {
+    border-radius: 0.2rem;
+    background-color: #eee;
+    color: #000;
+    padding: 0.25rem 0.625rem;
+    width: 100%;
   }
   .btn {
     display: block;
@@ -25,6 +38,30 @@ const Form = styled.form`
     border-radius: 1rem;
     border: none;
     margin: 1rem 0;
+    width: 40%;
+  }
+  .img {
+    display: flex;
+    justify-content: center;
+  }
+  .imgContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  @media screen and (max-width: 768px) {
+    height: 80vh;
+    width: 80%;
+    justify-content: space-around;
+    label {
+      width: 100%;
+      height: 2rem;
+    }
+    select,
+    input {
+      height: 4rem;
+    }
   }
 `;
 
@@ -64,7 +101,7 @@ const Edit = ({ post }) => {
       type: UPDATE_POST_REQUEST,
       data: { data: formData, PostId: post.id },
     });
-    Router.push('/');
+    Router.back();
   }, [imagePaths]);
 
   const onError = (error) => {
@@ -86,6 +123,16 @@ const Edit = ({ post }) => {
       data: imageFormData,
     });
   }, []);
+
+  const onRemoveImage = useCallback(
+    (index) => () => {
+      dispatch({
+        type: REMOVE_IMAGE,
+        data: index,
+      });
+    },
+    [],
+  );
 
   return (
     <Form
@@ -148,45 +195,49 @@ const Edit = ({ post }) => {
         <option value="none" disabled>
           선택하세요
         </option>
-        <option value="공동">공동</option>
-        <option value="남성">남성</option>
-        <option value="여성">여성</option>
-        <option value="아동">아동</option>
+        <option value="all">공동</option>
+        <option value="man">남성</option>
+        <option value="girl">여성</option>
+        <option value="child">아동</option>
       </select>
 
-      <input
-        type="file"
-        multiple
-        hidden
-        ref={imageInput}
-        onChange={onChangeImages}
-      />
-      <input
-        type="button"
-        value="이미지 업로드"
-        onClick={onClickImageUpload}
-        accept="image/*"
-      />
-
+      <div className="imgContainer">
+        <input
+          type="file"
+          multiple
+          hidden
+          ref={imageInput}
+          onChange={onChangeImages}
+        />
+        <input
+          type="button"
+          value="이미지 업로드"
+          onClick={onClickImageUpload}
+          accept="image/*"
+          className="btn"
+        />
+      </div>
       <div>
-        {imagePaths.map((v) => (
-          <div key={v}>
+        {imagePaths.map((v, i) => (
+          <div key={v} className="img">
             <img
               src={`http://localhost:3100/${v}`}
               style={{ width: '200px' }}
               alt="img"
             />
             {/* 서버에 Express.static 설정해야함 */}
-            {/* <div>
+            <div>
               <button type="button" onClick={onRemoveImage(i)}>
                 제거
               </button>
-            </div> */}
+            </div>
           </div>
         ))}
       </div>
 
-      <input className="btn" type="submit" value="확인" />
+      <div className="imgContainer">
+        <input className="btn" type="submit" value="확인" />
+      </div>
     </Form>
   );
 };

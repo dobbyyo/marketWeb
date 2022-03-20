@@ -2,6 +2,8 @@ export const initialState = {
   me: null,
   userInfo: null,
   imagePaths: [],
+  followers: [],
+  followings: [],
 
   // 로그인
   logInLoading: false,
@@ -42,9 +44,20 @@ export const initialState = {
   loadFollowingsLoading: false,
   loadFollowingsDone: false,
   loadFollowingsError: null,
+
   loadFollowersLoading: false,
   loadFollowersDone: false,
   loadFollowersError: null,
+
+  // 팔로윙 유저 불러오기
+  loadFollowingsUserLoading: false,
+  loadFollowingsUserDone: false,
+  loadFollowingsUserError: null,
+
+  // 팔로워 유저 불러오기
+  loadFollowersUserLoading: false,
+  loadFollowersUserDone: false,
+  loadFollowersUserError: null,
 
   // 아이디 변경
   nicknameChangeLoading: false,
@@ -121,6 +134,16 @@ export const LOAD_FOLLOWERS_FAILURE = 'LOAD_FOLLOWERS_FAILURE';
 export const LOAD_FOLLOWINGS_REQUEST = 'LOAD_FOLLOWINGS_REQUEST';
 export const LOAD_FOLLOWINGS_SUCCESS = 'LOAD_FOLLOWINGS_SUCCESS';
 export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE';
+
+// 팔로우 user get
+export const LOAD_FOLLOWERS_USER_REQUEST = 'LOAD_FOLLOWERS_USER_REQUEST';
+export const LOAD_FOLLOWERS_USER_SUCCESS = 'LOAD_FOLLOWERS_USER_SUCCESS';
+export const LOAD_FOLLOWERS_USER_FAILURE = 'LOAD_FOLLOWERS_USER_FAILURE';
+
+// 팔로잉 user get
+export const LOAD_FOLLOWINGS_USER_REQUEST = 'LOAD_FOLLOWINGS_USER_REQUEST';
+export const LOAD_FOLLOWINGS_USER_SUCCESS = 'LOAD_FOLLOWINGS_USER_SUCCESS';
+export const LOAD_FOLLOWINGS_USER_FAILURE = 'LOAD_FOLLOWINGS_USER_FAILURE';
 
 // 닉네임 Change
 export const NICKNAME_CHANGE_REQUEST = 'NICKNAME_CHANGE_REQUEST';

@@ -13,9 +13,15 @@ import {
   LOAD_FOLLOWERS_FAILURE,
   LOAD_FOLLOWERS_REQUEST,
   LOAD_FOLLOWERS_SUCCESS,
+  LOAD_FOLLOWERS_USER_FAILURE,
+  LOAD_FOLLOWERS_USER_REQUEST,
+  LOAD_FOLLOWERS_USER_SUCCESS,
   LOAD_FOLLOWINGS_FAILURE,
   LOAD_FOLLOWINGS_REQUEST,
   LOAD_FOLLOWINGS_SUCCESS,
+  LOAD_FOLLOWINGS_USER_FAILURE,
+  LOAD_FOLLOWINGS_USER_REQUEST,
+  LOAD_FOLLOWINGS_USER_SUCCESS,
   LOAD_MY_INFO_FAILURE,
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
@@ -348,6 +354,49 @@ function* uploadUserImgToMe(action) {
   }
 }
 
+// 팔로잉 유저 GET
+async function loadFollowingsUserAPI(userId) {
+  const res = axios.get(`/posts/${userId}/followings`);
+  return res;
+}
+
+function* loadFollowingsUser(action) {
+  try {
+    const result = yield call(loadFollowingsUserAPI, action.data);
+    yield put({
+      type: LOAD_FOLLOWINGS_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_FOLLOWINGS_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+// 팔로워 유저 GET
+async function loadFollowersUserAPI(userId) {
+  const res = axios.get(`/posts/${userId}/followers`);
+  return res;
+}
+
+function* loadFollowersUser(action) {
+  try {
+    const result = yield call(loadFollowersUserAPI, action.data);
+    yield put({
+      type: LOAD_FOLLOWERS_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LOAD_FOLLOWERS_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchLogIn() {
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
@@ -384,12 +433,17 @@ function* watchPasswordChange() {
 function* watchDeleteUser() {
   yield takeLatest(DELETE_USER_REQUEST, deleteUser);
 }
-
 function* watchUserImageUpload() {
   yield takeLatest(USER_IMAGE_REQUEST, uploadUserImg);
 }
 function* watchUserImageUploadToMe() {
   yield takeLatest(ADD_USER_IMG_TO_ME_REQUEST, uploadUserImgToMe);
+}
+function* watchLoadFollowersUser() {
+  yield takeLatest(LOAD_FOLLOWERS_USER_REQUEST, loadFollowersUser);
+}
+function* watchLoadFollowingsUser() {
+  yield takeLatest(LOAD_FOLLOWINGS_USER_REQUEST, loadFollowingsUser);
 }
 
 export default function* userSaga() {
@@ -408,5 +462,7 @@ export default function* userSaga() {
     fork(watchDeleteUser),
     fork(watchUserImageUpload),
     fork(watchUserImageUploadToMe),
+    fork(watchLoadFollowersUser),
+    fork(watchLoadFollowingsUser),
   ]);
 }

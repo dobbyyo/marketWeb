@@ -1,15 +1,14 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  margin: 0 auto;
 `;
 export const Box = styled.div`
   width: 30rem;
-  max-width: 30rem;
-  /* border: 1px solid black; */
+  /* max-width: 30rem; */
   border-top-left-radius: 1rem;
   border-top-right-radius: 1rem;
 
@@ -54,6 +53,12 @@ export const Form = styled.form`
       color: #fff;
       font-size: 1.6rem;
       border-radius: 1rem;
+    }
+  }
+  @media screen and (max-width: 768px) {
+    /* height: 30rem; */
+    input {
+      height: 3rem;
     }
   }
 `;

@@ -15,7 +15,7 @@ import {
 } from '../../reducers/user/userAction';
 
 const Container = styled.div`
-  width: 100%;
+  /* width: 100%; */
   button {
     width: 100%;
     border: none;
@@ -25,11 +25,32 @@ const Container = styled.div`
     border-radius: 1rem;
     color: #fff;
     font-size: 1.2rem;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.5;
+    }
   }
   input {
     width: 100%;
     margin-top: 1rem;
     border-radius: 1.2rem;
+  }
+  .img {
+    display: flex;
+    justify-content: center;
+    img {
+      margin-right: 1rem;
+    }
+  }
+  .blackBtn {
+    background-color: #111;
+    color: #fff;
+    height: 2rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    &:hover {
+      opacity: 0.5;
+    }
   }
 `;
 
@@ -150,10 +171,10 @@ const UserForm = () => {
           value="이미지 업로드"
           onClick={onClickImageUpload}
           accept="image/*"
+          className="blackBtn"
         />
 
-        <input type="submit" value="이미지 확인" />
-        <div>
+        <div className="img">
           {imagePaths[0] ? (
             <>
               <img
@@ -165,6 +186,7 @@ const UserForm = () => {
                 <button type="button" onClick={onRemoveImage()}>
                   제거
                 </button>
+                <input type="submit" value="이미지 확인" className="blackBtn" />
               </div>
             </>
           ) : null}

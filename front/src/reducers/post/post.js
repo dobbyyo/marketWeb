@@ -16,6 +16,12 @@ import {
   LIKE_POST_FAILURE,
   LIKE_POST_REQUEST,
   LIKE_POST_SUCCESS,
+  LOAD_CATEGORY_LENGTH_FAILURE,
+  LOAD_CATEGORY_LENGTH_REQUEST,
+  LOAD_CATEGORY_LENGTH_SUCCESS,
+  LOAD_CATEGORY_POSTS_FAILURE,
+  LOAD_CATEGORY_POSTS_REQUEST,
+  LOAD_CATEGORY_POSTS_SUCCESS,
   LOAD_HASHTAG_POSTS_FAILURE,
   LOAD_HASHTAG_POSTS_REQUEST,
   LOAD_HASHTAG_POSTS_SUCCESS,
@@ -61,7 +67,7 @@ import {
 const reducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
-      // 글 올리기
+      // 상품 올리기
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
         draft.addPostDone = false;
@@ -78,7 +84,7 @@ const reducer = (state = initialState, action) =>
         draft.addPostError = action.error;
         break;
 
-      // 글 제거
+      // 상품 제거
       case REMOVE_POST_REQUEST:
         draft.removePostLoading = true;
         draft.removePostDone = false;
@@ -97,7 +103,7 @@ const reducer = (state = initialState, action) =>
         draft.removePostError = action.error;
         break;
 
-      // 모든글 불러오기
+      // 모든상품 불러오기
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
@@ -114,7 +120,24 @@ const reducer = (state = initialState, action) =>
         draft.loadPostsError = action.error;
         break;
 
-      // 특정 유저 글한개 불러오기
+      // 특정 카테고리 모든 상품 불러오기
+      case LOAD_CATEGORY_POSTS_REQUEST:
+        draft.loadCategoryPostsLoading = true;
+        draft.loadCategoryPostsDone = false;
+        draft.loadCategoryPostsError = null;
+        break;
+      case LOAD_CATEGORY_POSTS_SUCCESS:
+        draft.loadCategoryPostsLoading = false;
+        draft.loadCategoryPostsDone = true;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.hasMorePosts = action.data.length === 9;
+        break;
+      case LOAD_CATEGORY_POSTS_FAILURE:
+        draft.loadCategoryPostsLoading = false;
+        draft.loadCategoryPostsError = action.error;
+        break;
+
+      // 특정 유저 상품한개 불러오기
       case LOAD_POST_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
@@ -130,7 +153,7 @@ const reducer = (state = initialState, action) =>
         draft.loadPostError = action.error;
         break;
 
-      // 특정 유저 포스터 전체 로드
+      // 특정 유저 삼품 전체 로드
       case LOAD_USER_POSTS_REQUEST:
         draft.loadPostLoading = true;
         draft.loadPostDone = false;
@@ -181,7 +204,7 @@ const reducer = (state = initialState, action) =>
         draft.likePostError = action.error;
         break;
 
-      // 포스터 싫어요
+      // 삼품 싫어요
       case UNLIKE_POST_REQUEST:
         draft.unlikePostLoading = true;
         draft.unlikePostDone = false;
@@ -235,7 +258,7 @@ const reducer = (state = initialState, action) =>
         draft.addCommentError = action.error;
         break;
 
-      // 포스터 수정
+      // 상품 수정
       case UPDATE_POST_REQUEST:
         draft.updatePostLoading = true;
         draft.updatePostDone = false;
@@ -292,7 +315,7 @@ const reducer = (state = initialState, action) =>
         draft.commentDeleteError = action.error;
         break;
 
-      // 포스터 이미지 변경
+      // 상품 이미지 변경
       case UPDATE_IMAGES_REQUEST:
         draft.updateImagesLoading = true;
         draft.updateImagesError = null;
@@ -324,7 +347,7 @@ const reducer = (state = initialState, action) =>
         draft.loadHashtagPostsError = action.error;
         break;
 
-      // 게시글 찜
+      // 상품 찜
       case SAVE_POSTS_REQUEST:
         draft.savePostsLoading = true;
         draft.savePostsError = null;
@@ -342,7 +365,7 @@ const reducer = (state = initialState, action) =>
         draft.savePostsError = action.error;
         break;
 
-      // 게시글 찜 취소
+      // 상품 찜 취소
       case REMOVE_SAVE_POSTS_REQUEST:
         draft.removeSavePostsLoading = true;
         draft.removeSavePostsError = null;

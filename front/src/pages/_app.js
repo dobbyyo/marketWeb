@@ -17,6 +17,12 @@ const GlobalStyle = createGlobalStyle`
     /* outline: none; */
     /* text-decoration: none; */
   }
+  input{
+    &:focus{outline:none}
+  }
+  select{
+    &:focus{outline: none}
+  }
   a{
     text-decoration: none;
     color: inherit;
